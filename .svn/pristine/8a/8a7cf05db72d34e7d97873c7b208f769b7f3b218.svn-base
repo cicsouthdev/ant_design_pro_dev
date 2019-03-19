@@ -1,0 +1,15 @@
+import { query as queryUsers, queryCurrent } from '@/services/mytest';
+
+export default {
+  namespace: 'mytest',
+  state:{
+    list: [],
+    name: 'test',
+  },
+  effects: {
+
+  },
+  reducers: {
+
+  }
+}
