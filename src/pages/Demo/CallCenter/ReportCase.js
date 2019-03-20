@@ -1,5 +1,20 @@
 import React, { Fragment, PureComponent } from 'react';
-import { Button, Card, Form, Col, DatePicker, Icon, Input, InputNumber, Row, Select, Badge, Divider, Table } from 'antd';
+import {
+  Button,
+  Card,
+  Form,
+  Col,
+  DatePicker,
+  Icon,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Badge,
+  Divider,
+  Table,
+  Cascader,
+} from 'antd';
 import { connect } from 'dva';
 import tableListStyles from '../../List/TableList.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -19,6 +34,7 @@ class ReportCase extends PureComponent{
   state = {
     expandForm: false,
     selectedRows: [],
+    onSite: true,
   };
 
   columns = [
@@ -64,6 +80,13 @@ class ReportCase extends PureComponent{
     },
   ];
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'report/init',
+    });
+  }
+
   handleSearch = e => {
     e.preventDefault();
 
@@ -74,13 +97,13 @@ class ReportCase extends PureComponent{
 
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
       };
 
       this.setState({
         formValues: values,
       });
-
+      console.log(fieldsValue);
+      console.error(values);
       dispatch({
         type: 'report/fetch',
         payload: values,
@@ -110,12 +133,12 @@ class ReportCase extends PureComponent{
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="车牌号">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('carNo')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="保单号">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('policyNo')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -222,6 +245,41 @@ class ReportCase extends PureComponent{
     return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
   }
 
+  renderWarningForm(){
+    const {
+      form: { getFieldDecorator },
+      report: { residences },
+    } = this.props;
+    console.log(residences);
+    return <Form onSubmit={this.handleSearch} layout="inline">
+      <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Col md={8} sm={24}>
+          <FormItem label="出险地点">
+            {getFieldDecorator('residence', {
+              initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+              rules: [{ type: 'array', required: true, message: '请选择出险地点' }],
+            })(
+              <Cascader options={residences} />
+            )}
+          </FormItem>
+        </Col>
+        <Col md={8} sm={24}>
+          <FormItem label="详细地点">
+            {getFieldDecorator('detailPlace')(<Input placeholder="请输入"/>)}
+          </FormItem>
+        </Col>
+      </Row>
+    </Form>;
+  }
+
+  renderMsgFrom(){
+    return <div>b</div>;
+  }
+
+  renderDispatchForm(){
+    return <div>c</div>;
+  }
+
   render(){
     const {
       report: { data },
@@ -247,12 +305,23 @@ class ReportCase extends PureComponent{
 
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>案件受理</div>
+          <div className={tableListStyles.tableList}>
+            <div className={tableListStyles.tableListForm}>{this.renderWarningForm()}</div>
+          </div>
 
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>信息提醒</div>
+          <div className={styles.title}>案件受理</div>
+          <div className={tableListStyles.tableList}>
+            <div className={tableListStyles.tableListForm}>{this.renderMsgFrom()}</div>
+          </div>
 
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>调度信息</div>
+          <div className={styles.title}>案件受理</div>
+          <div className={tableListStyles.tableList}>
+            <div className={tableListStyles.tableListForm}>{this.renderDispatchForm()}</div>
+          </div>
 
         </Card>
       </PageHeaderWrapper>

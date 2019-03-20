@@ -1,4 +1,4 @@
-import { queryReport } from '@/services/report';
+import { queryReport, queryReprotInit } from '@/services/report';
 
 
 export default {
@@ -9,6 +9,7 @@ export default {
       list: [],
       warningMsg: '',
     },
+    residences: [],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -18,6 +19,13 @@ export default {
         payload: response,
       });
     },
+    *init({payload}, {call, put}){
+      const response = yield call(queryReprotInit);
+      yield put({
+        type: 'initData',
+        payload: response,
+      })
+    },
   },
   reducers: {
     save(state, action) {
@@ -26,6 +34,12 @@ export default {
         data: action.payload,
       };
     },
+    initData(state, action) {
+      return {
+        ...state,
+        residences: action.payload,
+      }
+    }
   },
 
 }
