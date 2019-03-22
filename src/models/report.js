@@ -35,9 +35,11 @@ export default {
       };
     },
     initData(state, action) {
+      const {residences, reasons} = action.payload;
       return {
         ...state,
-        residences: action.payload,
+        residences,
+        reasons,
       }
     }
   },

@@ -69,8 +69,9 @@ export default class SiderMenu extends PureComponent {
         collapsed={collapsed}
         breakpoint="lg"
         onCollapse={collapse => {
+          // pc端第一次进来默认展开
           if (firstMount || !isMobile) {
-            onCollapse(collapse);
+            // onCollapse(collapse);
           }
         }}
         width={256}
