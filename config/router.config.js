@@ -68,6 +68,18 @@ export default [
           }
         ],
       },
+      {
+        name: 'process',
+        icon: 'calculator',
+        path: '/process',
+        routes: [
+          {
+            path: '/process/carBrandRel/rel',
+            name: 'carBrandRel',
+            component: './Process/CarBrandRel/CarBrandRel'
+          },
+        ]
+      },
       // forms
       {
         path: '/form',

@@ -42,4 +42,7 @@ export default {
   'menu.newPage.new': '测试页面',
   'menu.demo': 'DEMO',
   'menu.demo.reportCase': '呼叫中心-报案',
+  'menu.process': '流程控制',
+  'menu.process.carBrandRel': '车型与品牌关系',
+
 };

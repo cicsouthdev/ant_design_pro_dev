@@ -13,7 +13,7 @@ import {
   Badge,
   Divider,
   Table,
-  Cascader, Radio, Tooltip, Checkbox,
+  Cascader, Radio, Tooltip, Checkbox, Popover, Rate,
 } from 'antd';
 import { connect } from 'dva';
 import tableListStyles from '../../List/TableList.less';
@@ -121,6 +121,20 @@ class ReportCase extends PureComponent{
     }
   };
 
+  handleClickResidencePosition = ()=>{
+    this.setState({
+      x: 30.192773,
+      y: 120.212958,
+    })
+  };
+
+  handleResetResidencePosition = ()=>{
+    this.setState({
+      x: 0,
+      y: 0,
+    });
+  };
+
   toggleForm = () => {
     const { expandForm } = this.state;
     this.setState({
@@ -167,6 +181,7 @@ class ReportCase extends PureComponent{
     const {
       form: { getFieldDecorator },
     } = this.props;
+
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -275,11 +290,39 @@ class ReportCase extends PureComponent{
           </FormItem>
         </Col>
         <Col md={8} sm={24}>
-          <Button htmlType='button' type='primary'>地图定位</Button>
-          <Button style={{ marginLeft: 8 }} htmlType='button' >重置</Button>
-          {x && y ? <div>x:{x}  y:{y}</div> : ''}
+          <div style={{float: 'left'}}>
+            <Button htmlType='button' type='primary' onClick={this.handleClickResidencePosition} >地图定位</Button>
+            <Button style={{ marginLeft: 8 }} htmlType='button' onClick={this.handleResetResidencePosition} >重置</Button>
+          </div>
+          <div style={{float: 'left', fontSize:13, marginLeft: 7}}>
+            <Row style={{marginTop: -3}}>经度:{x}</Row>
+            <Row style={{marginTop: -3}}>纬度:{y}</Row>
+          </div>
         </Col>
       </Row>
+      {x && y ? <Row>
+        <Col md={24} sm={24} style={{marginTop: -20,marginBottom: 10}}>
+          <div>推荐送修：
+            <Popover placement="top"
+                     content={<div><div>推荐等级：<Rate disabled defaultValue={5} /></div><div>联系电话：<a>0571-64700000</a></div><div>离案发地1.2公里</div></div>}
+                     title="杭州奕星汽车服务有限公司">
+
+              <span className={styles.warningMsg}>杭州奕星汽车服务有限公司</span>，
+            </Popover>
+            <Popover placement="top"
+                     content={<div><div>联系电话：<a>0571-61232220</a></div><div>离案发地5公里</div></div>}
+                     title="杭州奕星汽车服务有限公司">
+              <span>杭州中升星宏汽车服务有限公司</span>，
+            </Popover>
+            <Popover placement="top"
+                     content={<div><div>联系电话：<a>0571-64702300</a></div><div>离案发地3.4公里</div></div>}
+                     title="杭州中升之星汽车销售服务有限公司">
+              <span>杭州中升之星汽车销售服务有限公司</span>
+            </Popover>
+            {/*&nbsp;&nbsp;&nbsp;<span>经度:{x} 维度:{y}</span>*/}
+          </div>
+        </Col>
+      </Row>:''}
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
         <Col md={8} sm={24}>
           <FormItem label="出险原因">
