@@ -6,14 +6,11 @@ import {
   Card,
   Form,
   Input,
-  Select,
   Button,
-  DatePicker,
   Modal,
   message,
   Divider,
-  Steps,
-  Radio, AutoComplete,
+  AutoComplete,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -21,10 +18,6 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './CarBrandRel.less';
 
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -47,6 +40,10 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} style={{display: 'none'}} label="id">
+        {form.getFieldDecorator('id')(<Input placeholder="请输入" />)}
+      </FormItem>
+
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="车型代码">
         {form.getFieldDecorator('carModel', {
           rules: [{ required: true }],
@@ -111,7 +108,7 @@ class TableList extends PureComponent {
       title: '操作',
       render: () => (
         <Fragment>
-          <a onClick={() => this.handleModalVisible(true)}>修改</a>
+          <a onClick={() => this.handleUpdateModalVisible(true)}>修改</a>
           <Divider type="vertical" />
           <a href="">删除</a>
         </Fragment>
@@ -151,7 +148,6 @@ class TableList extends PureComponent {
       payload: params,
     });
   };
-
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -208,10 +204,7 @@ class TableList extends PureComponent {
   };
 
   handleUpdateModalVisible = (flag, record) => {
-    this.setState({
-      updateModalVisible: !!flag,
-      stepFormValues: record || {},
-    });
+    this.handleModalVisible(flag);
   };
 
   handleAdd = fields => {
@@ -225,25 +218,6 @@ class TableList extends PureComponent {
 
     message.success('添加成功');
     this.handleModalVisible();
-  };
-
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    // dispatch({
-    //   type: 'rule/update',
-    //   payload: {
-    //     query: formValues,
-    //     body: {
-    //       name: fields.name,
-    //       desc: fields.desc,
-    //       key: fields.key,
-    //     },
-    //   },
-    // });
-
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
   };
 
   handleAutoSearch = (value)=>{
@@ -299,17 +273,12 @@ class TableList extends PureComponent {
   render() {
     const {
       process: {carBrandRelList},
-      loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
 
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
-    };
-    const updateMethods = {
-      handleUpdateModalVisible: this.handleUpdateModalVisible,
-      handleUpdate: this.handleUpdate,
     };
     return (
       <PageHeaderWrapper title="车型与品牌的关系">
@@ -329,7 +298,6 @@ class TableList extends PureComponent {
             </div>
             <StandardTable
               selectedRows={selectedRows}
-              loading={loading}
               data={carBrandRelList}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

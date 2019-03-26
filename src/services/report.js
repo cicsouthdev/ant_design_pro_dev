@@ -9,3 +9,7 @@ export async function queryReprotInit(){
   return request('/demo/reportInit');
 }
 
+export async function searchBrand(params){
+  return request(`/demo/brand?${stringify(params)}`);
+}
+

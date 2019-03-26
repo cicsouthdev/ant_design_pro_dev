@@ -1,4 +1,4 @@
-import { queryReport, queryReprotInit } from '@/services/report';
+import { queryReport, queryReprotInit, searchBrand } from '@/services/report';
 
 
 export default {
@@ -10,6 +10,8 @@ export default {
       warningMsg: '',
     },
     residences: [],
+    reasons: [],
+    brandAutoCompleteData:[],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -26,6 +28,13 @@ export default {
         payload: response,
       })
     },
+    *searchBrand({payload}, {call, put}){
+      const response = yield call(searchBrand, payload);
+      yield put({
+        type: 'saveBrand',
+        payload: response,
+      });
+    }
   },
   reducers: {
     save(state, action) {
@@ -40,6 +49,12 @@ export default {
         ...state,
         residences,
         reasons,
+      }
+    },
+    saveBrand(state, action){
+      return {
+        ...state,
+        brandAutoCompleteData: action.payload
       }
     }
   },

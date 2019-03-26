@@ -13,12 +13,11 @@ import {
   Badge,
   Divider,
   Table,
-  Cascader, Radio, Tooltip, Checkbox, Popover, Rate,
+  Cascader, Radio, Tooltip, Checkbox, Popover, Rate, AutoComplete,
 } from 'antd';
 import { connect } from 'dva';
 import tableListStyles from '../../List/TableList.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import moment from '../../List/TableList';
 import styles from './ReportCase.less';
 
 const FormItem = Form.Item;
@@ -39,6 +38,11 @@ class ReportCase extends PureComponent{
     y: 0,
     surveyX: 0,
     surveyY: 0,
+    showResidenceAdvice: true,
+    showSize: 1,  // 三者车损展示数量
+    carNoResult: {
+      '1': 0,'2': 0,'3': 0,'4':0
+    },
   };
 
   columns = [
@@ -128,10 +132,67 @@ class ReportCase extends PureComponent{
     })
   };
 
+  handleCLickScenePosition = () =>{
+    this.setState({
+      surveyX: 30.123456,
+      surveyY: 120.65432,
+      showResidenceAdvice: false,
+    });
+  };
+
+  handleResetScenePosition = () =>{
+    this.setState({
+      surveyX: 0,
+      surveyY: 0,
+      showResidenceAdvice: true,
+    });
+  };
+
   handleResetResidencePosition = ()=>{
     this.setState({
       x: 0,
       y: 0,
+    });
+  };
+
+  handleThreeCarLossAddClick = ()=>{
+    let {showSize} = this.state;
+    showSize<4 && showSize++;
+    this.setState({showSize});
+  };
+
+  handleThreeCarLossDiffClick = ()=>{
+    let {showSize} = this.state;
+    showSize>1 && showSize--;
+    this.setState({showSize});
+  };
+
+  handleThreeCarNoBlur = (key, value)=>{
+    const { form: {setFieldsValue} } = this.props;
+    const { carNoResult } = this.state;
+    if(key==1){
+      setFieldsValue({
+        threeCarLossPart1: '车门',
+        brand1: '奥迪',
+        threeCarOwnerName1: '王二',
+        threeCarOwnerPhone1: '18888888888',
+        threeCarOwnerSex1: '1',
+      });
+      carNoResult['1'] = 1;
+      this.setState({carNoResult});
+    }else{
+      carNoResult[key+""] = 2;
+      this.setState({carNoResult});
+    }
+  };
+
+  handleAutoSearch = value =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'report/searchBrand',
+      payload: {
+        query: value,
+      }
     });
   };
 
@@ -267,10 +328,17 @@ class ReportCase extends PureComponent{
   renderWarningForm(){
     const {
       form: { getFieldDecorator, getFieldValue },
-      report: { residences, reasons },
+      report: { residences, reasons, brandAutoCompleteData },
     } = this.props;
 
-    const { x, y, surveyX, surveyY } = this.state;
+    const Option = AutoComplete.Option;
+
+    const children = brandAutoCompleteData.map(d=><Option key={d.code}>{d.name}</Option>);
+
+    const { x, y, showResidenceAdvice, surveyX, surveyY, showSize, carNoResult } = this.state;
+    if(carNoResult['1']!=0){
+      console.log(carNoResult);
+    }
 
     return <Form layout="inline">
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -300,26 +368,24 @@ class ReportCase extends PureComponent{
           </div>
         </Col>
       </Row>
-      {x && y ? <Row>
+      {x && y && showResidenceAdvice ? <Row>
         <Col md={24} sm={24} style={{marginTop: -20,marginBottom: 10}}>
           <div>推荐送修：
             <Popover placement="top"
                      content={<div><div>推荐等级：<Rate disabled defaultValue={5} /></div><div>联系电话：<a>0571-64700000</a></div><div>离案发地1.2公里</div></div>}
                      title="杭州奕星汽车服务有限公司">
-
-              <span className={styles.warningMsg}>杭州奕星汽车服务有限公司</span>，
+              <span className={styles.warningMsg}><Badge count={1} style={{backgroundColor: '#fff', color: '#ff4000', boxShadow: '0 0 0 1px #ff4000 inset',marginTop:-3,marginRight:3}} />杭州奕星汽车服务有限公司</span>，
             </Popover>
             <Popover placement="top"
                      content={<div><div>联系电话：<a>0571-61232220</a></div><div>离案发地5公里</div></div>}
                      title="杭州奕星汽车服务有限公司">
-              <span>杭州中升星宏汽车服务有限公司</span>，
+              <span><Badge count={2} style={{backgroundColor: '#fff', color: 'black', boxShadow: '0 0 0 1px black inset',marginTop:-3,marginRight:3 }} />杭州中升星宏汽车服务有限公司</span>，
             </Popover>
             <Popover placement="top"
                      content={<div><div>联系电话：<a>0571-64702300</a></div><div>离案发地3.4公里</div></div>}
                      title="杭州中升之星汽车销售服务有限公司">
-              <span>杭州中升之星汽车销售服务有限公司</span>
+              <span><Badge count={3} style={{backgroundColor: '#fff', color: 'black', boxShadow: '0 0 0 1px black inset',marginTop:-3,marginRight:3 }} />杭州中升之星汽车销售服务有限公司</span>
             </Popover>
-            {/*&nbsp;&nbsp;&nbsp;<span>经度:{x} 维度:{y}</span>*/}
           </div>
         </Col>
       </Row>:''}
@@ -375,11 +441,37 @@ class ReportCase extends PureComponent{
           </FormItem>
         </Col>
         <Col md={8} sm={24}>
-          <Button htmlType='button' type='primary'>地图定位</Button>
-          <Button style={{ marginLeft: 8 }} htmlType='button' >重置</Button>
-          {surveyX && surveyX ? <div>x:{surveyX}  y:{surveyY}</div> : ''}
+          <div style={{float: 'left'}}>
+            <Button htmlType='button' type='primary' onClick={this.handleCLickScenePosition}>地图定位</Button>
+            <Button style={{ marginLeft: 8 }} htmlType='button' onClick={this.handleResetScenePosition} >重置</Button>
+          </div>
+          <div style={{float: 'left', fontSize:13, marginLeft: 7}}>
+            <Row style={{marginTop: -3}}>经度:{surveyX}</Row>
+            <Row style={{marginTop: -3}}>纬度:{surveyY}</Row>
+          </div>
         </Col>
       </Row>
+      {surveyX && surveyY ? <Row>
+        <Col md={24} sm={24} style={{marginTop: -20,marginBottom: 10}}>
+          <div>推荐送修：
+            <Popover placement="top"
+                     content={<div><div>推荐等级：<Rate disabled defaultValue={5} /></div><div>联系电话：<a>0571-64700000</a></div><div>离查勘地1.2公里</div></div>}
+                     title="杭州奕星汽车服务有限公司">
+              <span className={styles.warningMsg}><Badge count={1} style={{backgroundColor: '#fff', color: '#ff4000', boxShadow: '0 0 0 1px #ff4000 inset',marginTop:-3,marginRight:3}} />杭州奕星汽车服务有限公司</span>，
+            </Popover>
+            <Popover placement="top"
+                     content={<div><div>联系电话：<a>0571-61232220</a></div><div>离查勘地5公里</div></div>}
+                     title="杭州奕星汽车服务有限公司">
+              <span><Badge count={2} style={{backgroundColor: '#fff', color: 'black', boxShadow: '0 0 0 1px black inset',marginTop:-3,marginRight:3 }} />杭州中升星宏汽车服务有限公司</span>，
+            </Popover>
+            <Popover placement="top"
+                     content={<div><div>联系电话：<a>0571-64702300</a></div><div>离查勘地3.4公里</div></div>}
+                     title="杭州中升之星汽车销售服务有限公司">
+              <span><Badge count={3} style={{backgroundColor: '#fff', color: 'black', boxShadow: '0 0 0 1px black inset',marginTop:-3,marginRight:3 }} />杭州中升之星汽车销售服务有限公司</span>
+            </Popover>
+          </div>
+        </Col>
+      </Row>:''}
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
         <Col md={8} sm={24}>
           <FormItem label="车损">
@@ -455,77 +547,455 @@ class ReportCase extends PureComponent{
             </FormItem>
           </Col>
         </Row>
-        <Divider style={{ marginTop: 10, marginBottom: 10, }} />
-        <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
-          <Col md={8} sm={24}>
-            <FormItem label="三者车牌">
-              {getFieldDecorator('threeCarNo')(<Input placeholder="三者车车牌"/>)}
+        <Divider style={{ marginTop: 0, marginBottom: 15, }} />
+        <div className='threeCarLossDiv'>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="三者车牌">
+                {getFieldDecorator('threeCarNo1')(<Input placeholder="三者车车牌" onBlur={e=>{this.handleThreeCarNoBlur(1, e.target.value)}} />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="损失部位">
+                {getFieldDecorator('threeCarLossPart1')(<Input placeholder="三者车损失"/>)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="三者品牌">
+                {getFieldDecorator('brand1')(<AutoComplete placeholder="输入查询" onSearch={this.handleAutoSearch}>
+                  {children}
+                </AutoComplete>)}
+              </FormItem>
+            </Col>
+            {/*<Col md={8} sm={24}>
+              <FormItem label="车辆种类">
+                {getFieldDecorator('threeCarType')(<Input />)}
+              </FormItem>
+            </Col>*/}
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="车主姓名">
+                {getFieldDecorator('threeCarOwnerName1')(<Input placeholder="三者车车主姓名" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="联系方式">
+                {getFieldDecorator('threeCarOwnerPhone1')(<Input placeholder="三者车车主手机号" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="性别">
+                {getFieldDecorator('threeCarOwnerSex1')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      男
+                    </Radio>
+                    <Radio value="2">
+                      女
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="正常行驶">
+                {getFieldDecorator('threeCarStatus1')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+
+            <Col md={10} sm={24}>
+              <FormItem label={
+                <span>
+                  玻璃单独破碎&nbsp;
+                  <Tooltip title="若三者车损部位是玻璃，需询问是否仅玻璃单独受损。">
+                    <Icon type="info-circle-o" style={{ marginRight: 4 }} />
+                  </Tooltip>
+                </span>
+              }>
+                {getFieldDecorator('glassBrokenAlone1')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <FormItem >
+                {showSize===1 && <Button type="dashed" style={{ width: '40%', marginRight:10, }} onClick={this.handleThreeCarLossAddClick}>
+                  <Icon type="plus" /> 添加
+                </Button>}
+                {showSize>1 && <Button type="dashed" style={{ width: '40%' }} onClick={this.handleThreeCarLossDiffClick}>
+                  <Icon type="minus" /> 删除
+                </Button>}
+              </FormItem>
+            </Col>
+          </Row>
+          {carNoResult["1"] > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }}>
+            {carNoResult["1"]===1?<Col style={{marginTop:-30,marginBottom:10}}  md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
+          </Row>}
+        </div>
+        {showSize>1 && <Divider style={{ marginTop: 0, marginBottom: 15, }} />}
+        {showSize>1 && <div className='threeCarLossDiv'>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="三者车牌">
+                {getFieldDecorator('threeCarNo2')(<Input placeholder="三者车车牌" onBlur={e=>{this.handleThreeCarNoBlur(2, e.target.value)}} />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="损失部位">
+                {getFieldDecorator('threeCarLossPart2')(<Input placeholder="三者车损失"/>)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="三者品牌">
+                {getFieldDecorator('brand2')(<AutoComplete placeholder="输入查询" onSearch={this.handleAutoSearch}>
+                  {children}
+                </AutoComplete>)}
+              </FormItem>
+            </Col>
+            {/*<Col md={8} sm={24}>
+            <FormItem label="车辆种类">
+              {getFieldDecorator('threeCarType')(<Input />)}
             </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="损失部位">
-              {getFieldDecorator('threeCarLossPart')(<Input placeholder="三者车损失"/>)}
+          </Col>*/}
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="车主姓名">
+                {getFieldDecorator('threeCarOwnerName2')(<Input placeholder="三者车车主姓名" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="联系方式">
+                {getFieldDecorator('threeCarOwnerPhone2')(<Input placeholder="三者车车主手机号" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="性别">
+                {getFieldDecorator('threeCarOwnerSex2')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      男
+                    </Radio>
+                    <Radio value="2">
+                      女
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="正常行驶">
+                {getFieldDecorator('threeCarStatus2')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+
+            <Col md={10} sm={24}>
+              <FormItem label={
+                <span>
+                  玻璃单独破碎&nbsp;
+                  <Tooltip title="若三者车损部位是玻璃，需询问是否仅玻璃单独受损。">
+                    <Icon type="info-circle-o" style={{ marginRight: 4 }} />
+                  </Tooltip>
+                </span>
+              }>
+                {getFieldDecorator('glassBrokenAlone2')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <FormItem >
+                {showSize===2 && <Button type="dashed" style={{ width: '40%', marginRight:10, }} onClick={this.handleThreeCarLossAddClick}>
+                  <Icon type="plus" /> 添加
+                </Button>}
+                {showSize>1 && <Button type="dashed" style={{ width: '40%' }} onClick={this.handleThreeCarLossDiffClick}>
+                  <Icon type="minus" /> 删除
+                </Button>}
+              </FormItem>
+            </Col>
+          </Row>
+          {carNoResult["2"] > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            {carNoResult["2"]===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
+          </Row>}
+        </div>}
+        {showSize>2 && <Divider style={{ marginTop: 0, marginBottom: 15, }} />}
+        {showSize>2 && <div className='threeCarLossDiv'>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="三者车牌">
+                {getFieldDecorator('threeCarNo3')(<Input placeholder="三者车车牌" onBlur={e=>{this.handleThreeCarNoBlur(3, e.target.value)}} />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="损失部位">
+                {getFieldDecorator('threeCarLossPart3')(<Input placeholder="三者车损失"/>)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="三者品牌">
+                {getFieldDecorator('brand3')(<AutoComplete placeholder="输入查询" onSearch={this.handleAutoSearch}>
+                  {children}
+                </AutoComplete>)}
+              </FormItem>
+            </Col>
+            {/*<Col md={8} sm={24}>
+            <FormItem label="车辆种类">
+              {getFieldDecorator('threeCarType')(<Input />)}
             </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="正常行驶">
-              {getFieldDecorator('threeCarStatus')(
-                <Radio.Group>
-                  <Radio value="1">
-                    是
-                  </Radio>
-                  <Radio value="2">
-                    否
-                  </Radio>
-                  <Radio value="3">
-                    不详
-                  </Radio>
-                </Radio.Group>
-              )}
+          </Col>*/}
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="车主姓名">
+                {getFieldDecorator('threeCarOwnerName3')(<Input placeholder="三者车车主姓名" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="联系方式">
+                {getFieldDecorator('threeCarOwnerPhone3')(<Input placeholder="三者车车主手机号" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="性别">
+                {getFieldDecorator('threeCarOwnerSex3')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      男
+                    </Radio>
+                    <Radio value="2">
+                      女
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="正常行驶">
+                {getFieldDecorator('threeCarStatus3')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+
+            <Col md={10} sm={24}>
+              <FormItem label={
+                <span>
+                  玻璃单独破碎&nbsp;
+                  <Tooltip title="若三者车损部位是玻璃，需询问是否仅玻璃单独受损。">
+                    <Icon type="info-circle-o" style={{ marginRight: 4 }} />
+                  </Tooltip>
+                </span>
+              }>
+                {getFieldDecorator('glassBrokenAlone3')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <FormItem >
+                {showSize===3 && <Button type="dashed" style={{ width: '40%', marginRight:10, }} onClick={this.handleThreeCarLossAddClick}>
+                  <Icon type="plus" /> 添加
+                </Button>}
+                {showSize>1 && <Button type="dashed" style={{ width: '40%' }} onClick={this.handleThreeCarLossDiffClick}>
+                  <Icon type="minus" /> 删除
+                </Button>}
+              </FormItem>
+            </Col>
+          </Row>
+          {carNoResult["3"] > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            {carNoResult["3"]===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
+          </Row>}
+        </div>}
+        {showSize>3 && <Divider style={{ marginTop: 0, marginBottom: 15, }} />}
+        {showSize>3 && <div className='threeCarLossDiv'>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="三者车牌">
+                {getFieldDecorator('threeCarNo4')(<Input placeholder="三者车车牌" onBlur={e=>{this.handleThreeCarNoBlur(4, e.target.value)}} />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="损失部位">
+                {getFieldDecorator('threeCarLossPart4')(<Input placeholder="三者车损失"/>)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="三者品牌">
+                {getFieldDecorator('brand4')(<AutoComplete placeholder="输入查询" onSearch={this.handleAutoSearch}>
+                  {children}
+                </AutoComplete>)}
+              </FormItem>
+            </Col>
+            {/*<Col md={8} sm={24}>
+            <FormItem label="车辆种类">
+              {getFieldDecorator('threeCarType')(<Input />)}
             </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
-          <Col md={8} sm={24}>
-            <FormItem label="三者品牌">
-              {getFieldDecorator('brand')(<Input placeholder=""/>)}
-            </FormItem>
-          </Col>
-          <Col md={10} sm={24}>
-            <FormItem label={
-              <span>
-                玻璃单独破碎&nbsp;
-                <Tooltip title="若三者车损部位是玻璃，需询问是否仅玻璃单独受损。">
-                  <Icon type="info-circle-o" style={{ marginRight: 4 }} />
-                </Tooltip>
-              </span>
-            }>
-              {getFieldDecorator('glassBrokenAlone')(
-                <Radio.Group>
-                  <Radio value="1">
-                    是
-                  </Radio>
-                  <Radio value="2">
-                    否
-                  </Radio>
-                  <Radio value="3">
-                    不详
-                  </Radio>
-                </Radio.Group>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem >
-              <Button type="dashed" style={{ width: '40%', marginRight:10, }}>
-                <Icon type="plus" /> 添加
-              </Button>
-              <Button type="dashed" style={{ width: '40%' }}>
-                <Icon type="minus" /> 删除
-              </Button>
-            </FormItem>
-          </Col>
-        </Row>
+          </Col>*/}
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="车主姓名">
+                {getFieldDecorator('threeCarOwnerName4')(<Input placeholder="三者车车主姓名" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="联系方式">
+                {getFieldDecorator('threeCarOwnerPhone4')(<Input placeholder="三者车车主手机号" />)}
+              </FormItem>
+            </Col>
+            <Col md={8} sm={24}>
+              <FormItem label="性别">
+                {getFieldDecorator('threeCarOwnerSex4')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      男
+                    </Radio>
+                    <Radio value="2">
+                      女
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            <Col md={8} sm={24}>
+              <FormItem label="正常行驶">
+                {getFieldDecorator('threeCarStatus4')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+
+            <Col md={10} sm={24}>
+              <FormItem label={
+                <span>
+                  玻璃单独破碎&nbsp;
+                  <Tooltip title="若三者车损部位是玻璃，需询问是否仅玻璃单独受损。">
+                    <Icon type="info-circle-o" style={{ marginRight: 4 }} />
+                  </Tooltip>
+                </span>
+              }>
+                {getFieldDecorator('glassBrokenAlone4')(
+                  <Radio.Group>
+                    <Radio value="1">
+                      是
+                    </Radio>
+                    <Radio value="2">
+                      否
+                    </Radio>
+                    <Radio value="3">
+                      不详
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <FormItem >
+                {showSize===4 && <Button type="dashed" style={{ width: '40%', marginRight:10, }} onClick={this.handleThreeCarLossAddClick}>
+                  <Icon type="plus" /> 添加
+                </Button>}
+                {showSize>1 && <Button type="dashed" style={{ width: '40%' }} onClick={this.handleThreeCarLossDiffClick}>
+                  <Icon type="minus" /> 删除
+                </Button>}
+              </FormItem>
+            </Col>
+          </Row>
+        </div>}
       </Card>
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
         <Col md={8} sm={24}>

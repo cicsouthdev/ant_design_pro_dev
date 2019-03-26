@@ -6,6 +6,7 @@ export default {
     res.send({
       list: [
         {
+          key: 1,
           policyType: '商业险',
           policyNo: '0118339732000360004614',
           insured: '段光华',
@@ -18,6 +19,7 @@ export default {
           policyStatus: '有效',
         },
         {
+          key: 2,
           policyType: '交强险',
           policyNo: '0118339732000332004623',
           insured: '段光华',
@@ -106,6 +108,10 @@ export default {
       },
     ],
   },
-
+  '/demo/brand': [
+    {name:'广州丰田', code:'guagnzhoufengtian'},
+    {name:'四川丰田', code:'sichuanfengtian'},
+    {name:'一汽丰田', code:'yqifengtian'},
+  ],
 
 }
