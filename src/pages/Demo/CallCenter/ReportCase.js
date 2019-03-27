@@ -43,6 +43,12 @@ class ReportCase extends PureComponent{
     carNoResult: {
       '1': 0,'2': 0,'3': 0,'4':0
     },
+    carNoResult1: 0,
+    carNoResult2: 0,
+    carNoResult3: 0,
+    carNoResult4: 0,
+    searchSuccess: false,
+    searchFailure: false,
   };
 
   columns = [
@@ -169,7 +175,6 @@ class ReportCase extends PureComponent{
 
   handleThreeCarNoBlur = (key, value)=>{
     const { form: {setFieldsValue} } = this.props;
-    const { carNoResult } = this.state;
     if(key==1){
       setFieldsValue({
         threeCarLossPart1: '车门',
@@ -178,11 +183,13 @@ class ReportCase extends PureComponent{
         threeCarOwnerPhone1: '18888888888',
         threeCarOwnerSex1: '1',
       });
-      carNoResult['1'] = 1;
-      this.setState({carNoResult});
-    }else{
-      carNoResult[key+""] = 2;
-      this.setState({carNoResult});
+      this.setState({carNoResult1: 1});
+    }else if(key==2){
+      this.setState({carNoResult2: 2});
+    }else if(key == 3){
+      this.setState({carNoResult3: 2});
+    }else if(key == 4){
+      this.setState({carNoResult4: 2});
     }
   };
 
@@ -194,6 +201,22 @@ class ReportCase extends PureComponent{
         query: value,
       }
     });
+  };
+
+  handleSearchSuccess = ()=>{
+    const { form: {setFieldsValue}} = this.props;
+    setFieldsValue({
+      threeCarLossPart2: '车门',
+      brand2: '奥迪',
+      threeCarOwnerName2: '王三',
+      threeCarOwnerPhone2: '18886666666',
+      threeCarOwnerSex2: '2',
+    });
+    this.setState({searchSuccess: true});
+  };
+
+  handleSearchFailure = () =>{
+    this.setState({searchFailure: true});
   };
 
   toggleForm = () => {
@@ -335,10 +358,11 @@ class ReportCase extends PureComponent{
 
     const children = brandAutoCompleteData.map(d=><Option key={d.code}>{d.name}</Option>);
 
-    const { x, y, showResidenceAdvice, surveyX, surveyY, showSize, carNoResult } = this.state;
-    if(carNoResult['1']!=0){
-      console.log(carNoResult);
-    }
+    const {
+      x, y, showResidenceAdvice, surveyX, surveyY, showSize,
+      searchFailure, searchSuccess,
+      carNoResult4, carNoResult3, carNoResult2, carNoResult1,
+    } = this.state;
 
     return <Form layout="inline">
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -656,8 +680,8 @@ class ReportCase extends PureComponent{
               </FormItem>
             </Col>
           </Row>
-          {carNoResult["1"] > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }}>
-            {carNoResult["1"]===1?<Col style={{marginTop:-30,marginBottom:10}}  md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
+          {carNoResult1 > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }}>
+            {carNoResult1===1?<Col style={{marginTop:-30,marginBottom:10}}  md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
           </Row>}
         </div>
         {showSize>1 && <Divider style={{ marginTop: 0, marginBottom: 15, }} />}
@@ -769,8 +793,11 @@ class ReportCase extends PureComponent{
               </FormItem>
             </Col>
           </Row>
-          {carNoResult["2"] > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
-            {carNoResult["2"]===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
+          {carNoResult2 > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            {carNoResult2===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col>
+              : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆,&nbsp;
+                <a onClick={this.handleSearchSuccess}>点击查询承保库</a>{searchSuccess?<span>, 查询成功</span>:''}
+              </Col>}
           </Row>}
         </div>}
         {showSize>2 && <Divider style={{ marginTop: 0, marginBottom: 15, }} />}
@@ -882,8 +909,11 @@ class ReportCase extends PureComponent{
               </FormItem>
             </Col>
           </Row>
-          {carNoResult["3"] > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
-            {carNoResult["3"]===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col> : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆, <a>点击查询承保库</a></Col>}
+          {carNoResult3 > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
+            {carNoResult3===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col>
+              : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆,&nbsp;
+                <a onClick={this.handleSearchFailure}>点击查询承保库</a>{searchFailure?<span>, 未查询到相关信息</span>:''}
+              </Col>}
           </Row>}
         </div>}
         {showSize>3 && <Divider style={{ marginTop: 0, marginBottom: 15, }} />}
