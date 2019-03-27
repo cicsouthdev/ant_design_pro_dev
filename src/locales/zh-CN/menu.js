@@ -38,11 +38,13 @@ export default {
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
+
   'menu.newPage': '新增页面',
   'menu.newPage.new': '测试页面',
   'menu.demo': 'DEMO',
   'menu.demo.reportCase': '呼叫中心-报案',
   'menu.process': '流程控制',
   'menu.process.carBrandRel': '车型与品牌关系',
+  'menu.process.brandSSSSRel': '品牌与修理厂关系',
 
 };

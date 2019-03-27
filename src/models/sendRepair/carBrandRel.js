@@ -1,7 +1,7 @@
-import {queryCarBrandRel, searchBrand} from '@/services/process'
+import {queryCarBrandRel, searchBrand, saveCarBrandRel, updateCarBrandRels} from '@/services/process'
 
 export default {
-  namespace: 'process',
+  namespace: 'carBrandRel',
   state: {
     carBrandRelList:{
       list:[],
@@ -11,21 +11,26 @@ export default {
     brandAutoCompleteData: [],
   },
   effects: {
-    *carBrandRel({ payload }, { call, put }) {
+    *fetch({ payload }, { call, put }) {
       const response = yield call(queryCarBrandRel, payload);
       yield put({
         type: 'saveCarBrandRel',
         payload: response,
       });
     },
-    // *addCarBrandRel
     *searchBrand({payload}, {call, put}){
       const response = yield call(searchBrand, payload);
       yield put({
         type: 'saveBrand',
         payload: response,
       });
-    }
+    },
+    *add({ payload }, {call, put}){
+      yield call(saveCarBrandRel, payload);
+    },
+    *addAll({ payload }, {call, put}){
+      yield call(updateCarBrandRels, payload);
+    },
 
   },
   reducers: {

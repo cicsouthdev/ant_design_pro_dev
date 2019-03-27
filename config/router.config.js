@@ -78,6 +78,11 @@ export default [
             name: 'carBrandRel',
             component: './Process/CarBrandRel/CarBrandRel'
           },
+          {
+            path: '/process/brandSSSSRel/rel',
+            name: 'brandSSSSRel',
+            component: './Process/BrandSSSSRel/BrandSSSSRel',
+          }
         ]
       },
       // forms

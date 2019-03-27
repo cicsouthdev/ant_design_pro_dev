@@ -15,7 +15,7 @@ import {
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './CarBrandRel.less';
+import styles from './BrandSSSSRel.less';
 
 const FormItem = Form.Item;
 const getValue = obj =>
@@ -87,9 +87,9 @@ const CreateForm = Form.create()(props => {
 });
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ carBrandRel, loading }) => ({
-  carBrandRel,
-  loading: loading.models.carBrandRel,
+@connect(({ brandSSSSRel, loading }) => ({
+  brandSSSSRel,
+  loading: loading.models.brandSSSSRel,
 }))
 @Form.create()
 class TableList extends PureComponent {
@@ -134,7 +134,7 @@ class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'carBrandRel/fetch',
+      type: 'brandSSSSRel/fetch',
     });
   }
 
@@ -159,7 +159,7 @@ class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'carBrandRel/fetch',
+      type: 'brandSSSSRel/fetch',
       payload: params,
     });
   };
@@ -171,7 +171,7 @@ class TableList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'carBrandRel/fetch',
+      type: 'brandSSSSRel/fetch',
       payload: {},
     });
   };
@@ -206,7 +206,7 @@ class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'carBrandRel/fetch',
+        type: 'brandSSSSRel/fetch',
         payload: values,
       });
     });
@@ -219,21 +219,15 @@ class TableList extends PureComponent {
   };
 
   handleUpdateModalVisible = (flag, record) => {
-    console.log(record);
     this.handleModalVisible(flag);
     this.setState({updateValue: {...record}})
-    // setFieldsValue({
-    //   carModelName: record.carModelName,
-    //   brandName: record.brandName,
-    //   remark: record.remark,
-    // });
   };
 
   handleAdd = fields => {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'carBrandRel/'+fields.id?'update':'add',
+      type: 'brandSSSSRel/'+fields.id?'update':'add',
       payload: {
         ...fields,
       },
@@ -246,7 +240,7 @@ class TableList extends PureComponent {
   handleAutoSearch = (value)=>{
     const { dispatch } = this.props;
     dispatch({
-      type: 'carBrandRel/searchBrand',
+      type: 'brandSSSSRel/searchBrand',
       payload: {
         query: value,
       }
@@ -256,7 +250,7 @@ class TableList extends PureComponent {
   renderForm() {
     const {
       form: { getFieldDecorator },
-      carBrandRel: { brandAutoCompleteData=[] },
+      brandSSSSRel: { brandAutoCompleteData=[] },
     } = this.props;
 
     const Option = AutoComplete.Option;
@@ -295,7 +289,7 @@ class TableList extends PureComponent {
 
   render() {
     const {
-      carBrandRel: {carBrandRelList},
+      brandSSSSRel: {brandSSSSRelList},
     } = this.props;
     const { selectedRows, modalVisible, updateValue } = this.state;
 
@@ -304,7 +298,7 @@ class TableList extends PureComponent {
       handleModalVisible: this.handleModalVisible,
     };
     return (
-      <PageHeaderWrapper title="车型与品牌的关系">
+      <PageHeaderWrapper title="品牌与维修单位的关系">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
@@ -314,14 +308,13 @@ class TableList extends PureComponent {
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>配置</Button>
                   <Button>删除</Button>
                 </span>
               )}
             </div>
             <StandardTable
               selectedRows={selectedRows}
-              data={carBrandRelList}
+              data={brandSSSSRelList}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
