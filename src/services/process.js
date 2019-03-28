@@ -57,3 +57,12 @@ export async function updateBrandSSSSRel(params){
     }
   });
 }
+
+export async function queryRepairCompany(params){
+  return request(`/process/repairCompany?${stringify(params)}`);
+}
+
+export async function queryRepairCompanyGroup(params){
+  return request(`/process/repairCompanyGroup${stringify(params)}`);
+}
+

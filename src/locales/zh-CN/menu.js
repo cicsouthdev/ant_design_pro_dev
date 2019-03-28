@@ -41,10 +41,14 @@ export default {
 
   'menu.newPage': '新增页面',
   'menu.newPage.new': '测试页面',
+
   'menu.demo': 'DEMO',
   'menu.demo.reportCase': '呼叫中心-报案',
   'menu.process': '流程控制',
   'menu.process.carBrandRel': '车型与品牌关系',
   'menu.process.brandSSSSRel': '品牌与修理厂关系',
+  'menu.process.repairCompany': '维修单位设置',
+  'menu.process.sendRepairCode': '维修单位送修码',
+  'menu.process.repairCompanyGroup': '维修集团设置',
 
 };

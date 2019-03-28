@@ -71,18 +71,38 @@ export default [
       {
         name: 'process',
         icon: 'calculator',
-        path: '/process',
+        path: '/sendRepair',
         routes: [
           {
-            path: '/process/carBrandRel/rel',
+            path: '/sendRepair/carBrandRel',
             name: 'carBrandRel',
-            component: './Process/CarBrandRel/CarBrandRel'
+            component: './SendRepair/CarBrandRel/CarBrandRel'
           },
           {
-            path: '/process/brandSSSSRel/rel',
+            path: '/sendRepair/brandSSSSRel',
             name: 'brandSSSSRel',
-            component: './Process/BrandSSSSRel/BrandSSSSRel',
-          }
+            component: './SendRepair/BrandSSSSRel/BrandSSSSRel',
+          },
+          {
+            path: '/sendRepair/repairCompany/repairCompany',
+            name: 'repairCompany',
+            component: './SendRepair/RepairCompany/RepairCompany',
+          },
+          {
+            path: '/sendRepair/repairCompany/sendRepairCode',
+            name: 'sendRepairCode',
+            component: './SendRepair/RepairCompany/SendRepairCode',
+          },
+          {
+            path: '/sendRepair/repairCompanyGroup',
+            name: 'repairCompanyGroup',
+            component: './SendRepair/RepairCompanyGroup/RepairCompanyGroup',
+          },
+          {
+            path: '/sendRepair/processEngine',
+            name: 'processEngine',
+            component: './SendRepair/ProcessEngine/ProcessEngine',
+          },
         ]
       },
       // forms

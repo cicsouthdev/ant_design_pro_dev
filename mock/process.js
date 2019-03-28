@@ -124,4 +124,121 @@ export default {
   'PUT /process/brandSSSSRel': {msg:'success'},
   'DELETE /process/brandSSSSRel': {msg:'success'},
 
+  'GET /process/repairCompany': (req, res)=>{
+    const dataSource = [
+      {
+        id: '14321234',
+        companyCode: '3301721001294',
+        companyName: '杭州随风汽修',
+        repairCompanyCode: '3301721001294',
+        companyAddress: '杭州市余杭区余杭街111号',
+        longitude: '119.999999',
+        latitude: '30.222222',
+        belongCompany: '武林支公司',
+        giveUp: '0',
+        valid: '1',
+      },{
+        id: '123413234',
+        companyCode: '33003H100054',
+        companyName: '杭州汇迪',
+        repairCompanyCode: '3301031000005',
+        companyAddress: '石祥路536号',
+        longitude: '119.123456',
+        latitude: '30.123456',
+        belongCompany: '武林支公司',
+        giveUp: '0',
+        valid: '1',
+      },{
+        id: '125341234',
+        companyCode: '3301001000016',
+        companyName: '建德元麦',
+        repairCompanyCode: '3301001000016',
+        companyAddress: '建德市新衢路269号',
+        longitude: '120.546687',
+        latitude: '30.546546',
+        belongCompany: '建德支公司',
+        giveUp: '1',
+        valid: '1',
+      },{
+        id: '123432134',
+        companyCode: '33003H100240',
+        companyName: '杭州九和',
+        repairCompanyCode: '3301533000001',
+        companyAddress: '绍兴路424号',
+        longitude: '120.789630',
+        latitude: '19.998742',
+        belongCompany: '武林支公司',
+        giveUp: '0',
+        valid: '0',
+      },
+    ];
+    const result = {
+      list: dataSource,
+      pagination: {
+        total: dataSource.length,
+        pageSize: 20,
+        current: 1,
+      },
+    };
+
+    return res.json(result);
+  },
+  'POST /process/repairCompany': {msg:'success'},
+  'PUT /process/repairCompany': {msg:'success'},
+  'DELETE /process/repairCompany': {msg:'success'},
+
+  'GET /process/repairCompanyGroup': (req, res)=>{
+    const dataSource = [
+      {
+        id: '14321234',
+        groupCode: '3301721001294',
+        groupName: '金昌集团',
+        generalManagerCode: '3301721001294',
+        generalManagerName: '王二狗',
+        generalManagerPhone: '119.999999',
+        belongCompanyCode: '1232133',
+        belongCompany: '武林支公司',
+      },{
+        id: '1432122234',
+        groupCode: '330172102201294',
+        groupName: '桐庐风之行',
+        generalManagerCode: '330172111001294',
+        generalManagerName: '赵铁柱',
+        generalManagerPhone: '18812345678',
+        belongCompanyCode: '1232133',
+        belongCompany: '武林支公司',
+      },{
+        id: '1432221234',
+        groupCode: '3301721001294',
+        groupName: '中德集团',
+        generalManagerCode: '330172155001294',
+        generalManagerName: '李铁根',
+        generalManagerPhone: '18699999999',
+        belongCompanyCode: '1232133',
+        belongCompany: '武林支公司',
+      },{
+        id: '1431121234',
+        groupCode: '33017221001294',
+        groupName: '浙江星奥汽修',
+        generalManagerCode: '330172103301294',
+        generalManagerName: '陈二壮',
+        generalManagerPhone: '13588888888',
+        belongCompanyCode: '1232133',
+        belongCompany: '武林支公司',
+      },
+    ];
+    const result = {
+      list: dataSource,
+      pagination: {
+        total: dataSource.length,
+        pageSize: 20,
+        current: 1,
+      },
+    };
+
+    return res.json(result);
+  },
+  'POST /process/repairCompanyGroup': {msg:'success'},
+  'PUT /process/repairCompanyGroup': {msg:'success'},
+  'DELETE /process/repairCompanyGroup': {msg:'success'},
 }
