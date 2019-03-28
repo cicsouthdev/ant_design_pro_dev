@@ -26,7 +26,9 @@ const getValue = obj =>
 const CreateForm = Form.create()(props => {
   const {
     modalVisible, form, handleAdd, handleModalVisible,
-    defaultValue: {id, carModel, carModelName, brandName, remark,}
+    defaultValue: {id, surveyPossession, sendRepairBrand, repairCompany, sendRepairWeight,
+      weightProportion, sendRepairProportion, nearbyCoefficient, farAwayCoefficient, nearbyDistance,
+      farAwayDistance, nearbyKeyWord, farAwayKeyWord, }
   } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -50,38 +52,81 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={cancelHandle }
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} style={{display: 'none'}} label="id">
+      <FormItem style={{display: 'none'}} label="id">
         {form.getFieldDecorator('id', {initialValue: id})(<Input />)}
       </FormItem>
-
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="车型代码">
-        {form.getFieldDecorator('carModel', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="查勘属地">
+        {form.getFieldDecorator('surveyPossession', {
           rules: [{ required: true }],
-          initialValue: carModel
+          initialValue: surveyPossession
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="车型名称">
-        {form.getFieldDecorator('carModelName', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修品牌">
+        {form.getFieldDecorator('sendRepairBrand', {
           rules: [{ required: true }],
-          initialValue: carModelName,
+          initialValue: sendRepairBrand,
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="品牌名称">
-        {form.getFieldDecorator('brandName', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="维修单位">
+        {form.getFieldDecorator('repairCompany', {
           rules: [{ required: true }],
-          initialValue: brandName
+          initialValue: repairCompany
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注">
-        {form.getFieldDecorator('remark', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修权重">
+        {form.getFieldDecorator('sendRepairWeight', {
           rules: [{ required: true }],
-          initialValue: remark,
+          initialValue: sendRepairWeight,
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="权重占比">
+        {form.getFieldDecorator('weightProportion', {
+          rules: [{ required: true }],
+          initialValue: weightProportion,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修占比">
+        {form.getFieldDecorator('sendRepairProportion', {
+          rules: [{ required: true }],
+          initialValue: sendRepairProportion,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="就近系数">
+        {form.getFieldDecorator('nearbyCoefficient', {
+          rules: [{ required: true }],
+          initialValue: nearbyCoefficient,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离系数">
+        {form.getFieldDecorator('farAwayCoefficient', {
+          rules: [{ required: true }],
+          initialValue: farAwayCoefficient,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="就近公里">
+        {form.getFieldDecorator('nearbyDistance', {
+          rules: [{ required: true }],
+          initialValue: nearbyDistance,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离公里">
+        {form.getFieldDecorator('farAwayDistance', {
+          rules: [{ required: true }],
+          initialValue: farAwayDistance,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="就近地名关键字">
+        {form.getFieldDecorator('nearbyKeyWord', {
+          rules: [{ required: true }],
+          initialValue: nearbyKeyWord,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离地名关键字">
+        {form.getFieldDecorator('farAwayKeyWord', {
+          rules: [{ required: true }],
+          initialValue: farAwayKeyWord,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
     </Modal>
   );
 });
@@ -104,23 +149,63 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: '车型代码',
-      dataIndex: 'carModel',
+      title: '查勘属地',
+      dataIndex: 'surveyPossession',
+      fixed: 'left',
+      width: 100,
     },
     {
-      title: '车型名称',
-      dataIndex: 'carModelName',
+      title: '送修品牌',
+      dataIndex: 'sendRepairBrand',
+      fixed: 'left',
+      width: 100,
     },
     {
-      title: '品牌名称',
-      dataIndex: 'brandName',
+      title: '维修单位',
+      dataIndex: 'repairCompany',
+      fixed: 'left',
+      width: 100,
     },
     {
-      title: '备注',
-      dataIndex: 'remark',
+      title: '送修权重',
+      dataIndex: 'sendRepairWeight',
+    },
+    {
+      title: '权重占比',
+      dataIndex: 'weightProportion',
+    },
+    {
+      title: '送修占比',
+      dataIndex: 'sendRepairProportion',
+    },
+    {
+      title: '就近系数',
+      dataIndex: 'nearbyCoefficient',
+    },
+    {
+      title: '远离系数',
+      dataIndex: 'farAwayCoefficient',
+    },
+    {
+      title: '就近公里',
+      dataIndex: 'nearbyDistance',
+    },
+    {
+      title: '远离公里',
+      dataIndex: 'farAwayDistance',
+    },
+    {
+      title: '就近地名关键字',
+      dataIndex: 'nearbyKeyWord',
+    },
+    {
+      title: '远离地名关键字',
+      dataIndex: 'farAwayKeyWord',
     },
     {
       title: '操作',
+      fixed: 'right',
+      width: 100,
       render: (data) => (
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, data)}>修改</a>
@@ -164,17 +249,17 @@ class TableList extends PureComponent {
     });
   };
 
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'brandSSSSRel/fetch',
-      payload: {},
-    });
-  };
+  // handleFormReset = () => {
+  //   const { form, dispatch } = this.props;
+  //   form.resetFields();
+  //   this.setState({
+  //     formValues: {},
+  //   });
+  //   dispatch({
+  //     type: 'brandSSSSRel/fetch',
+  //     payload: {},
+  //   });
+  // };
 
   toggleForm = () => {
     const { expandForm } = this.state;
@@ -215,6 +300,7 @@ class TableList extends PureComponent {
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
+      updateValue: {}
     });
   };
 
@@ -260,12 +346,30 @@ class TableList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="车型代码">
-              {getFieldDecorator('carModel')(<Input placeholder="请输入(前N位)" />)}
+            <FormItem label="归属公司">
+              {getFieldDecorator('company')(<Input placeholder="请输入(前N位)" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="品牌名称">
+            <FormItem label="查勘属地">
+              {getFieldDecorator('brandName')(
+                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
+                </AutoComplete>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="送修品牌">
+              {getFieldDecorator('brandName')(
+                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
+                </AutoComplete>
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="维修单位">
               {getFieldDecorator('brandName')(
                 <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
                 </AutoComplete>
@@ -276,9 +380,6 @@ class TableList extends PureComponent {
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
               </Button>
             </span>
           </Col>
@@ -313,6 +414,8 @@ class TableList extends PureComponent {
               )}
             </div>
             <StandardTable
+              size="middle"
+              scroll={{ x: 1400 }}
               selectedRows={selectedRows}
               data={brandSSSSRelList}
               columns={this.columns}
