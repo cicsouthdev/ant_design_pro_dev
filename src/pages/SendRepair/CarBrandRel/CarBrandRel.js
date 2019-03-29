@@ -96,9 +96,9 @@ class TableList extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
+    batchVisible: false,
     selectedRows: [],
     formValues: {},
-    stepFormValues: {},
     updateValue: {},
   };
 
@@ -230,6 +230,10 @@ class TableList extends PureComponent {
     // });
   };
 
+  handleBatchVisible = ()=>{
+    this.setState({batchVisible: true});
+  };
+
   handleAdd = fields => {
     const { dispatch } = this.props;
 
@@ -252,6 +256,14 @@ class TableList extends PureComponent {
         query: value,
       }
     });
+  };
+
+  handleBatchOk = ()=>{
+
+  };
+
+  handleBatchCancel = ()=>{
+    this.setState({batchVisible: false});
   };
 
   renderForm() {
@@ -296,14 +308,19 @@ class TableList extends PureComponent {
 
   render() {
     const {
-      carBrandRel: {carBrandRelList},
+      carBrandRel: {carBrandRelList, brandAutoCompleteData=[]},
+      form: {getFieldDecorator},
     } = this.props;
-    const { selectedRows, modalVisible, updateValue } = this.state;
+    const { selectedRows, modalVisible, updateValue, batchVisible } = this.state;
 
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
     };
+
+    const Option = AutoComplete.Option;
+    const children = brandAutoCompleteData.map(d=><Option key={d.code}>{`${d.name} (${d.number})`}</Option>);
+
     return (
       <PageHeaderWrapper title="车型与品牌的关系">
         <Card bordered={false}>
@@ -313,9 +330,9 @@ class TableList extends PureComponent {
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新增
               </Button>
+              <Button onClick={this.handleBatchVisible}>批量设置</Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>配置</Button>
                   <Button>删除</Button>
                 </span>
               )}
@@ -330,6 +347,27 @@ class TableList extends PureComponent {
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} defaultValue={updateValue}/>
+        <Modal
+          destroyOnClose
+          title="批量设置"
+          visible={batchVisible}
+          onOk={this.handleBatchOk}
+          onCancel={this.handleBatchCancel}
+        >
+          <Form>
+            <FormItem label="车型代码">
+              {getFieldDecorator('carModelSetting')(
+                <Input />
+              )}
+            </FormItem>
+            <FormItem label="品牌名称">
+              {getFieldDecorator('brandNameSetting')(
+                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
+                </AutoComplete>
+              )}
+            </FormItem>
+          </Form>
+        </Modal>
       </PageHeaderWrapper>
     );
   }

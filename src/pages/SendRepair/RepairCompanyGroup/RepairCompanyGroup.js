@@ -10,9 +10,8 @@ import {
   Modal,
   message,
   Divider,
-  AutoComplete,
+  AutoComplete, Table, Transfer,
 } from 'antd';
-import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './RepairCompanyGroup.less';
@@ -110,10 +109,13 @@ class TableList extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
+    settingModalVisible: false,
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
     updateValue: {},
+    childrenSettingValue: [],
+    targetKeys: [],
   };
 
   columns = [
@@ -149,6 +151,8 @@ class TableList extends PureComponent {
       title: '操作',
       render: (data) => (
         <Fragment>
+          {data.isParent?<a onClick={()=>this.handleSettingChildren(data)}>设置下属单位</a>:null}
+          {data.isParent?<Divider type="vertical" />:null}
           <a onClick={() => this.handleUpdateModalVisible(true, data)}>修改</a>
           <Divider type="vertical" />
           <a href="">删除</a>
@@ -162,7 +166,38 @@ class TableList extends PureComponent {
     dispatch({
       type: 'repairCompanyGroup/fetch',
     });
+    dispatch({
+      type: 'repairCompanyGroup/unSelectedCompanyFetch',
+    });
   }
+
+  handleSettingChildren = ({children=[]})=>{
+    const { repairCompanyGroup:{ unSelectedCompany } } = this.props;
+    let allChildren = unSelectedCompany;
+    let targetKeys = [];
+    children.forEach(d=>{
+      allChildren.push({id:d.id, name:d.name});
+      targetKeys.push(d.id);
+    });
+    this.setState({
+      childrenSettingValue: allChildren,
+      targetKeys,
+      settingModalVisible: true,
+    })
+  };
+
+  handleTransferChange = (targetKeys)=>{
+    this.setState({targetKeys});
+  };
+
+  handleSettingOk = ()=>{
+    // TODO 调后台保存，重新加载表格数据，重新加载unSelectedCompany数据，然后关闭modal
+    // this.setState({});
+  };
+
+  handleSettingCancel = ()=>{
+    this.setState({settingModalVisible: false});
+  };
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -190,28 +225,10 @@ class TableList extends PureComponent {
     });
   };
 
-  // handleFormReset = () => {
-  //   const { form, dispatch } = this.props;
-  //   form.resetFields();
-  //   this.setState({
-  //     formValues: {},
-  //   });
-  //   dispatch({
-  //     type: 'repairCompanyGroup/fetch',
-  //     payload: {},
-  //   });
-  // };
-
   toggleForm = () => {
     const { expandForm } = this.state;
     this.setState({
       expandForm: !expandForm,
-    });
-  };
-
-  handleSelectRows = rows => {
-    this.setState({
-      selectedRows: rows,
     });
   };
 
@@ -315,7 +332,13 @@ class TableList extends PureComponent {
     const {
       repairCompanyGroup: {repairCompanyGroupList},
     } = this.props;
-    const { selectedRows, modalVisible, updateValue } = this.state;
+    const { selectedRows, modalVisible, updateValue, settingModalVisible, childrenSettingValue, targetKeys } = this.state;
+    const { list = [], pagination } = repairCompanyGroupList;
+    const paginationProps = {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      ...pagination,
+    };
 
     const parentMethods = {
       handleAdd: this.handleAdd,
@@ -336,18 +359,40 @@ class TableList extends PureComponent {
                 </span>
               )}
             </div>
-            <StandardTable
+            <Table
               rowKey='id'
               size="middle"
-              selectedRows={selectedRows}
-              data={repairCompanyGroupList}
+              dataSource={list}
+              pagination={paginationProps}
               columns={this.columns}
-              onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
+              childrenColumnName='aaa'
             />
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} defaultValue={updateValue}/>
+
+        <Modal
+          destroyOnClose
+          title="设置集团子单位"
+          visible={settingModalVisible}
+          onOk={this.handleSettingOk}
+          onCancel={this.handleSettingCancel}
+        >
+          <Transfer
+            rowKey={d=>d.id}
+            listStyle={{
+              width: 200,
+              height: 300,
+            }}
+            showSearch
+            dataSource={childrenSettingValue}
+            targetKeys={targetKeys}
+            render={item => item.name}
+            onChange={this.handleTransferChange}
+          />
+        </Modal>
+
       </PageHeaderWrapper>
     );
   }

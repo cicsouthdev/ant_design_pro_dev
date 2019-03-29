@@ -1,5 +1,4 @@
 
-
 export default {
   '/demo/report': (req, res)=>{
     const { carNo="浙A12345" } = req.query||{};

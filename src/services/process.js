@@ -66,3 +66,10 @@ export async function queryRepairCompanyGroup(params){
   return request(`/process/repairCompanyGroup${stringify(params)}`);
 }
 
+export async function queryProcessEngineData(params){
+  return request(`/process/processEngine?${stringify(params)}`);
+}
+
+export async function queryUnSelectedCompany(params){
+  return request(`/process/unSelectedCompany`);
+}

@@ -1,14 +1,8 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import {
-  Row,
-  Col,
   Card,
-  Form,
-  Input,
   Button,
-  Modal,
-  message,
   Divider,
   Menu, Table,
 } from 'antd';
@@ -21,7 +15,10 @@ import styles from './ProcessEngine.less';
 }))
 class ProcessEngine extends PureComponent {
   state = {
-    current: 'systemEvent'
+    current: 'systemEvent',
+    searchStatus: false,
+    processStatus: true,
+    rollStatus: true,
   };
 
   columns={
@@ -54,7 +51,7 @@ class ProcessEngine extends PureComponent {
         title: '接收者名称',
         dataIndex: 'receiverName',
       },{
-        title: '接受者号码',
+        title: '接收者号码',
         dataIndex: 'receiverPhone',
       },{
         title: '发送时间',
@@ -94,40 +91,40 @@ class ProcessEngine extends PureComponent {
         dataIndex: 'id',
       },{
         title: '报案号',
-        dataIndex: '',
+        dataIndex: 'reportNo',
       },{
         title: '任务类别',
-        dataIndex: '',
+        dataIndex: 'taskType',
       },{
         title: '任务名称',
-        dataIndex: '',
+        dataIndex: 'taskName',
       },{
         title: '任务执行人',
-        dataIndex: '',
+        dataIndex: 'taskReceiver',
       },{
         title: '任务时间',
-        dataIndex: '',
+        dataIndex: 'taskTime',
       },{
         title: '任务描述',
-        dataIndex: '',
+        dataIndex: 'taskDesc',
       },
     ],
     msgQueue: [
       {
         title: '消息时间',
-        dataIndex: '',
+        dataIndex: 'msgTime',
       },{
         title: '发送者',
-        dataIndex: '',
+        dataIndex: 'sender',
       },{
         title: '业务类型',
-        dataIndex: '',
+        dataIndex: 'businessType',
       },{
         title: '业务代码',
-        dataIndex: '',
+        dataIndex: 'businessCode',
       },{
         title: '消息内容',
-        dataIndex: '',
+        dataIndex: 'businessContent',
       },
     ],
   };
@@ -136,6 +133,100 @@ class ProcessEngine extends PureComponent {
     this.setState({
       current: e.key,
     });
+    if(this.state.searchStatus) this.searchList(e.key);
+  };
+
+  handleSearch = ()=>{
+    const key = this.state.current;
+    this.searchList(key);
+    this.setState({
+      searchStatus: true,
+    });
+  };
+
+  handleTableChange = (pagination, filtersArg, sorter) => {
+    const { formValues, current } = this.state;
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
+      ...formValues,
+      ...filters,
+    };
+    if (sorter.field) {
+      params.sorter = `${sorter.field}_${sorter.order}`;
+    }
+
+    // dispatch({
+    //   type: 'carBrandRel/fetch',
+    //   payload: params,
+    // });
+    this.searchList(current, params);
+
+  };
+
+  searchList(key='systemEvent', params={}){
+    const { dispatch } = this.props;
+    switch (key) {
+      case 'systemEvent':
+        dispatch({
+          type: 'processEngine/fetchSystemEvent',
+          payload: params,
+        });
+        break;
+      case 'msgSend':
+        dispatch({
+          type: 'processEngine/fetchMsgSend',
+          payload: params,
+        });
+        break;
+      case 'msgReceive':
+        dispatch({
+          type: 'processEngine/fetchMsgReceive',
+          payload: params,
+        });
+        break;
+      case 'taskSendDistribution':
+        dispatch({
+          type: 'processEngine/fetchTaskSendDistribution',
+          payload: params,
+        });
+        break;
+      case 'msgQueue':
+        dispatch({
+          type: 'processEngine/fetchMsgQueue',
+          payload: params,
+        });
+        break;
+    }
+  }
+
+  handleStopRollClick= ()=>{
+    this.setState({rollStatus: !this.state.rollStatus});
+  };
+
+  handleSearchStopClick = ()=>{
+    this.setState({
+      searchStatus: false,
+    })
+  };
+
+  handleProcessStartClick = ()=>{
+    this.setState({
+      processStatus: true,
+    });
+  };
+
+  handleProcessStopClick= ()=>{
+    this.setState({
+      processStatus: false,
+    })
   };
 
   render(){
@@ -143,7 +234,7 @@ class ProcessEngine extends PureComponent {
     const {
       processEngine,loading
     } = this.props;
-    const { current } = this.state;
+    const { current, searchStatus, processStatus, rollStatus } = this.state;
     const MenuItem = Menu.Item;
     const { list = [], pagination } = processEngine[current];
     const paginationProps = {
@@ -169,16 +260,32 @@ class ProcessEngine extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{}</div>
           <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+            <Button icon="caret-right" type="primary" disabled={searchStatus} onClick={this.handleSearch}>
               查询开始
+            </Button>
+            <Button icon="pause" type="primary" disabled={!searchStatus} onClick={this.handleSearchStopClick}>
+              查询停止
+            </Button>
+            <Divider type="vertical" />
+            <Button icon="caret-right" type="primary" disabled={processStatus} onClick={this.handleProcessStartClick} >
+              流程开始
+            </Button>
+            <Button icon="stop" type="primary" disabled={!processStatus} onClick={this.handleProcessStopClick} >
+              流程停止
+            </Button>
+            <Divider type="vertical" />
+            <Button icon="pushpin" type={rollStatus?'primary':''} onClick={this.handleStopRollClick} >
+              停止滚动
             </Button>
           </div>
           <Table
+            size='middle'
             rowKey='id'
             loading={loading}
             dataSource={list}
             pagination={paginationProps}
             columns={this.columns[current]}
+            onchange={this.handleTableChange}
           />
         </div>
       </Card>

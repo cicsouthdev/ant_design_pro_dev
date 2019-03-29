@@ -1,4 +1,4 @@
-import {queryRepairCompanyGroup} from '@/services/process'
+import {queryRepairCompanyGroup, queryUnSelectedCompany} from '@/services/process'
 
 export default {
   namespace: 'repairCompanyGroup',
@@ -8,6 +8,7 @@ export default {
       pagination: {
       },
     },
+    unSelectedCompany: [],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -26,6 +27,13 @@ export default {
     *delete(){
 
     },
+    *unSelectedCompanyFetch({ payload }, { call, put }) {
+      const response = yield call(queryUnSelectedCompany, payload);
+      yield put({
+        type: 'saveUnSelectedCompany',
+        payload: response,
+      });
+    }
   },
   reducers: {
     saveRepairCompanyGroup(state, action) {
@@ -34,6 +42,12 @@ export default {
         repairCompanyGroupList: action.payload,
       };
     },
+    saveUnSelectedCompany(state, action){
+      return {
+        ...state,
+        unSelectedCompany: action.payload
+      }
+    }
   },
 
 }

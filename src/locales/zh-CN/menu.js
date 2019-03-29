@@ -50,5 +50,6 @@ export default {
   'menu.process.repairCompany': '维修单位设置',
   'menu.process.sendRepairCode': '维修单位送修码',
   'menu.process.repairCompanyGroup': '维修集团设置',
+  'menu.process.processEngine': '流程引擎',
 
 };

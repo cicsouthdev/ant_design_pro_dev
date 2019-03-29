@@ -5,8 +5,7 @@ export default {
   state: {
     carBrandRelList:{
       list:[],
-      pagination: {
-      },
+      pagination: {},
     },
     brandAutoCompleteData: [],
   },
