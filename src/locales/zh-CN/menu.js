@@ -52,4 +52,8 @@ export default {
   'menu.process.repairCompanyGroup': '维修集团设置',
   'menu.process.processEngine': '流程引擎',
 
+//  报表
+  'menu.report': '报表',
+  'menu.report.sendRepair': '送修量统计报表',
+
 };

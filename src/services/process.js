@@ -73,3 +73,11 @@ export async function queryProcessEngineData(params){
 export async function queryUnSelectedCompany(params){
   return request(`/process/unSelectedCompany`);
 }
+
+export async function querySendRepairCode(params){
+  return request('/process/sendRepairCode');
+}
+
+export async function searchRepairCompany(params){
+  return request(`/process/repairCompany?${stringify(params)}`);
+}

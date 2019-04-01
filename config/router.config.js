@@ -105,6 +105,18 @@ export default [
           },
         ]
       },
+      {
+        name: 'report',
+        icon: 'table',
+        path: '/report',
+        routes: [
+          {
+            path: '/report/sendRepair',
+            name: 'sendRepair',
+            component: './Report/SendRepairProcess/SendRepairNum',
+          }
+        ],
+      },
       // forms
       {
         path: '/form',

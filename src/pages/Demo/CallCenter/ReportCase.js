@@ -796,7 +796,7 @@ class ReportCase extends PureComponent{
           {carNoResult2 > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
             {carNoResult2===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col>
               : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆,&nbsp;
-                <a onClick={this.handleSearchSuccess}>点击查询承保库</a>{searchSuccess?<span>, 查询成功</span>:''}
+                <a onClick={this.handleSearchSuccess}>点击查询电销库</a>,&nbsp;<a onClick={this.handleSearchSuccess}>点击查询第三方接口</a>{searchSuccess?<span>, 查询成功</span>:''}
               </Col>}
           </Row>}
         </div>}
@@ -912,7 +912,7 @@ class ReportCase extends PureComponent{
           {carNoResult3 > 0 && <Row gutter={{ md: 2, lg: 6, xl: 12 }} >
             {carNoResult3===1?<Col style={{marginTop:-30,marginBottom:10}} md={24}>该车为我公司承保车辆</Col>
               : <Col style={{marginTop:-30,marginBottom:10}} className={styles.warningMsg} md={24}>该车非我公司承保车辆,&nbsp;
-                <a onClick={this.handleSearchFailure}>点击查询承保库</a>{searchFailure?<span>, 未查询到相关信息</span>:''}
+                <a onClick={this.handleSearchFailure}>点击查询承保库</a>,&nbsp;<a onClick={this.handleSearchFailure}>点击查询第三方接口</a>{searchFailure?<span>, 未查询到相关信息</span>:''}
               </Col>}
           </Row>}
         </div>}

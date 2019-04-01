@@ -1,4 +1,4 @@
-import {queryRepairCompany} from '@/services/process'
+import {queryRepairCompany, querySendRepairCode, searchRepairCompany} from '@/services/process'
 
 export default {
   namespace: 'repairCompany',
@@ -8,6 +8,11 @@ export default {
       pagination: {
       },
     },
+    sendRepairCodeList: {
+      list: [],
+      pagination: [],
+    },
+    autoSearchCompanyList: [],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -26,6 +31,20 @@ export default {
     *delete(){
 
     },
+    *fetchSendRepairCode({ payload }, { call, put }) {
+      const response = yield call(querySendRepairCode, payload);
+      yield put({
+        type: 'saveSendRepairCode',
+        payload: response,
+      });
+    },
+    *searchRepairCompany({ payload }, { call, put }) {
+      const response = yield call(searchRepairCompany, payload);
+      yield put({
+        type: 'saveAutoSearch',
+        payload: response,
+      });
+    },
   },
   reducers: {
     saveRepairCompany(state, action) {
@@ -34,6 +53,18 @@ export default {
         repairCompanyList: action.payload,
       };
     },
+    saveSendRepairCode(state, action){
+      return {
+        ...state,
+        sendRepairCodeList: action.payload,
+      }
+    },
+    saveAutoSearch(state, action){
+      return {
+        ...state,
+        autoSearchCompanyList: action.payload
+      }
+    }
   },
 
 }

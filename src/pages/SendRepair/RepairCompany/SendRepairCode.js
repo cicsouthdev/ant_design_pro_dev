@@ -10,12 +10,15 @@ import {
   Modal,
   message,
   Divider,
-  AutoComplete,
+  AutoComplete, Select, DatePicker,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './RepairCompany.less';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const getValue = obj =>
@@ -26,9 +29,7 @@ const getValue = obj =>
 const CreateForm = Form.create()(props => {
   const {
     modalVisible, form, handleAdd, handleModalVisible,
-    defaultValue: {id, surveyPossession, sendRepairBrand, repairCompany, sendRepairWeight,
-      weightProportion, sendRepairProportion, nearbyCoefficient, farAwayCoefficient, nearbyDistance,
-      farAwayDistance, nearbyKeyWord, farAwayKeyWord, }
+    defaultValue: {id, sendRepairCode, sendRepairCodeType, startDate, endDate, companyName }
   } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -55,89 +56,47 @@ const CreateForm = Form.create()(props => {
       <FormItem style={{display: 'none'}} label="id">
         {form.getFieldDecorator('id', {initialValue: id})(<Input />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="查勘属地">
-        {form.getFieldDecorator('surveyPossession', {
-          rules: [{ required: true }],
-          initialValue: surveyPossession
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修品牌">
-        {form.getFieldDecorator('sendRepairBrand', {
-          rules: [{ required: true }],
-          initialValue: sendRepairBrand,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="维修单位">
-        {form.getFieldDecorator('repairCompany', {
+        {form.getFieldDecorator('companyName', {
           rules: [{ required: true }],
-          initialValue: repairCompany
+          initialValue: companyName
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修权重">
-        {form.getFieldDecorator('sendRepairWeight', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修码类型">
+        {form.getFieldDecorator('sendRepairCodeType', {
           rules: [{ required: true }],
-          initialValue: sendRepairWeight,
+          initialValue: sendRepairCodeType,
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="权重占比">
-        {form.getFieldDecorator('weightProportion', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修码">
+        {form.getFieldDecorator('sendRepairCode', {
           rules: [{ required: true }],
-          initialValue: weightProportion,
+          initialValue: sendRepairCode
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修占比">
-        {form.getFieldDecorator('sendRepairProportion', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="起保日期开始">
+        {form.getFieldDecorator('startDate', {
           rules: [{ required: true }],
-          initialValue: sendRepairProportion,
-        })(<Input placeholder="请输入" />)}
+          initialValue: moment(startDate, 'YYYY-MM-DD'),
+        })(<DatePicker style={{width: '100%'}} />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="就近系数">
-        {form.getFieldDecorator('nearbyCoefficient', {
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="起保日期结束">
+        {form.getFieldDecorator('endDate', {
           rules: [{ required: true }],
-          initialValue: nearbyCoefficient,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离系数">
-        {form.getFieldDecorator('farAwayCoefficient', {
-          rules: [{ required: true }],
-          initialValue: farAwayCoefficient,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="就近公里">
-        {form.getFieldDecorator('nearbyDistance', {
-          rules: [{ required: true }],
-          initialValue: nearbyDistance,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离公里">
-        {form.getFieldDecorator('farAwayDistance', {
-          rules: [{ required: true }],
-          initialValue: farAwayDistance,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="就近地名关键字">
-        {form.getFieldDecorator('nearbyKeyWord', {
-          rules: [{ required: true }],
-          initialValue: nearbyKeyWord,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离地名关键字">
-        {form.getFieldDecorator('farAwayKeyWord', {
-          rules: [{ required: true }],
-          initialValue: farAwayKeyWord,
-        })(<Input placeholder="请输入" />)}
+          initialValue: moment(endDate, 'YYYY-MM-DD'),
+        })(<DatePicker style={{width: '100%'}} />)}
       </FormItem>
     </Modal>
   );
 });
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ brandSSSSRel, loading }) => ({
-  brandSSSSRel,
-  loading: loading.models.brandSSSSRel,
+@connect(({ repairCompany, loading }) => ({
+  repairCompany,
+  loading: loading.models.repairCompany,
 }))
 @Form.create()
-class TableList extends PureComponent {
+class SendRepairCode extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -149,63 +108,27 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: '查勘属地',
-      dataIndex: 'surveyPossession',
-      fixed: 'left',
-      width: 100,
-    },
-    {
-      title: '送修品牌',
-      dataIndex: 'sendRepairBrand',
-      fixed: 'left',
-      width: 100,
-    },
-    {
       title: '维修单位',
-      dataIndex: 'repairCompany',
-      fixed: 'left',
-      width: 100,
+      dataIndex: 'companyName',
     },
     {
-      title: '送修权重',
-      dataIndex: 'sendRepairWeight',
+      title: '送修码类型',
+      dataIndex: 'sendRepairCodeType',
     },
     {
-      title: '权重占比',
-      dataIndex: 'weightProportion',
+      title: '送修码',
+      dataIndex: 'sendRepairCode',
     },
     {
-      title: '送修占比',
-      dataIndex: 'sendRepairProportion',
+      title: '起保日期开始',
+      dataIndex: 'startDate',
     },
     {
-      title: '就近系数',
-      dataIndex: 'nearbyCoefficient',
-    },
-    {
-      title: '远离系数',
-      dataIndex: 'farAwayCoefficient',
-    },
-    {
-      title: '就近公里',
-      dataIndex: 'nearbyDistance',
-    },
-    {
-      title: '远离公里',
-      dataIndex: 'farAwayDistance',
-    },
-    {
-      title: '就近地名关键字',
-      dataIndex: 'nearbyKeyWord',
-    },
-    {
-      title: '远离地名关键字',
-      dataIndex: 'farAwayKeyWord',
+      title: '起保日期结束',
+      dataIndex: 'endDate',
     },
     {
       title: '操作',
-      fixed: 'right',
-      width: 100,
       render: (data) => (
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, data)}>修改</a>
@@ -219,7 +142,7 @@ class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'brandSSSSRel/fetch',
+      type: 'repairCompany/fetchSendRepairCode',
     });
   }
 
@@ -244,7 +167,7 @@ class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'brandSSSSRel/fetch',
+      type: 'repairCompany/fetchSendRepairCode',
       payload: params,
     });
   };
@@ -256,7 +179,7 @@ class TableList extends PureComponent {
   //     formValues: {},
   //   });
   //   dispatch({
-  //     type: 'brandSSSSRel/fetch',
+  //     type: 'repairCompany/fetchSendRepairCode',
   //     payload: {},
   //   });
   // };
@@ -291,7 +214,7 @@ class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'brandSSSSRel/fetch',
+        type: 'repairCompany/fetchSendRepairCode',
         payload: values,
       });
     });
@@ -313,7 +236,7 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'brandSSSSRel/'+fields.id?'update':'add',
+      type: 'repairCompany/'+fields.id?'update':'add',
       payload: {
         ...fields,
       },
@@ -326,7 +249,7 @@ class TableList extends PureComponent {
   handleAutoSearch = (value)=>{
     const { dispatch } = this.props;
     dispatch({
-      type: 'brandSSSSRel/searchBrand',
+      type: 'repairCompany/searchRepairCompany',
       payload: {
         query: value,
       }
@@ -336,23 +259,26 @@ class TableList extends PureComponent {
   renderForm() {
     const {
       form: { getFieldDecorator },
-      brandSSSSRel: { brandAutoCompleteData=[] },
+      repairCompany: { autoSearchCompanyList=[] },
     } = this.props;
 
     const Option = AutoComplete.Option;
-    const children = brandAutoCompleteData.map(d=><Option key={d.code}>{`${d.name} (${d.number})`}</Option>);
+    const children = autoSearchCompanyList.map(d=><Option key={d.code}>{d.name}</Option>);
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="归属公司">
-              {getFieldDecorator('company')(<Input placeholder="请输入(前N位)" />)}
+              {getFieldDecorator('belongCompany')(
+                <Input />
+              )}
+                {/*<Select ></Select>*/}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="查勘属地">
-              {getFieldDecorator('brandName')(
+            <FormItem label="维修单位">
+              {getFieldDecorator('repairCompany')(
                 <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
                 </AutoComplete>
               )}
@@ -361,18 +287,20 @@ class TableList extends PureComponent {
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="送修品牌">
-              {getFieldDecorator('brandName')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
-                </AutoComplete>
+            <FormItem label="送修码类型">
+              {getFieldDecorator('sendRepairCodeType')(
+                <Select>
+                  <Select.Option value='all'>全部</Select.Option>
+                  <Select.Option value='recommendCode'>推荐送修码</Select.Option>
+                  <Select.Option value='channelCode'>渠道码</Select.Option>
+                </Select>
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="维修单位">
-              {getFieldDecorator('brandName')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
-                </AutoComplete>
+            <FormItem label="送修码">
+              {getFieldDecorator('sendRepairCode')(
+                <Input />
               )}
             </FormItem>
           </Col>
@@ -390,7 +318,7 @@ class TableList extends PureComponent {
 
   render() {
     const {
-      brandSSSSRel: {brandSSSSRelList},
+      repairCompany: {sendRepairCodeList},
     } = this.props;
     const { selectedRows, modalVisible, updateValue } = this.state;
 
@@ -415,9 +343,8 @@ class TableList extends PureComponent {
             </div>
             <StandardTable
               size="middle"
-              scroll={{ x: 1400 }}
               selectedRows={selectedRows}
-              data={brandSSSSRelList}
+              data={sendRepairCodeList}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
@@ -430,4 +357,4 @@ class TableList extends PureComponent {
   }
 }
 
-export default TableList;
+export default SendRepairCode;

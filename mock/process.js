@@ -49,18 +49,25 @@ export default {
     {name:'一汽丰田', code:'yqifengtian', number: 869},
   ],
 
+  '/process/repairCompany': [
+    {name: '杭州随风汽修', code:'hzsfqx'},
+    {name: '杭州汇迪', code: 'hzhd'},
+    {name: '建德元麦', code: 'jdym'},
+    {name: '杭州九和', code: 'hzjh'},
+  ],
+
   '/process/belongCompany': [
-    {code: '33010000', name: '杭州市分公司'},
-    {code: '33010100', name: '宁波市分公司'},
-    {code: '33010200', name: '温州市分公司'},
-    {code: '33010300', name: '绍兴市分公司'},
-    {code: '33010400', name: '湖州市分公司'},
-    {code: '33010500', name: '嘉兴市分公司'},
-    {code: '33010600', name: '衢州市分公司'},
-    {code: '33010700', name: '金华市分公司'},
-    {code: '33010700', name: '台州市分公司'},
-    {code: '33010800', name: '丽水市分公司'},
-    {code: '33010900', name: '舟山市分公司'},
+    {code: '33010000', name: '杭州市支公司'},
+    {code: '33010100', name: '宁波市支公司'},
+    {code: '33010200', name: '温州市支公司'},
+    {code: '33010300', name: '绍兴市支公司'},
+    {code: '33010400', name: '湖州市支公司'},
+    {code: '33010500', name: '嘉兴市支公司'},
+    {code: '33010600', name: '衢州市支公司'},
+    {code: '33010700', name: '金华市支公司'},
+    {code: '33010700', name: '台州市支公司'},
+    {code: '33010800', name: '丽水市支公司'},
+    {code: '33010900', name: '舟山市支公司'},
   ],
 
   'GET /process/brandSSSSRel': (req, res)=>{
@@ -200,6 +207,54 @@ export default {
   'POST /process/repairCompany': {msg:'success'},
   'PUT /process/repairCompany': {msg:'success'},
   'DELETE /process/repairCompany': {msg:'success'},
+
+  'GET /process/sendRepairCode': (req, res)=>{
+    const dataSource = [
+      {
+        id: '14321234',
+        companyCode: '3301721001294',
+        companyName: '杭州随风汽修',
+        sendRepairCode: '3301721001294',
+        sendRepairCodeType: '推荐送修码',
+        startDate: '2018-02-13',
+        endDate: '2020-02-13',
+      },{
+        id: '123413234',
+        companyCode: '33003H100054',
+        companyName: '杭州汇迪',
+        sendRepairCode: '3301031000005',
+        sendRepairCodeType: '推荐送修码',
+        startDate: '2018-08-15',
+        endDate: '2023-08-15',
+      },{
+        id: '125341234',
+        companyCode: '3301001000016',
+        companyName: '建德元麦',
+        sendRepairCode: '33003H100229',
+        sendRepairCodeType: '渠道码',
+        startDate: '2019-01-01',
+        endDate: '2025-02-02',
+      },{
+        id: '123432134',
+        companyCode: '33003H100240',
+        companyName: '杭州九和',
+        sendRepairCode: '33010H00228',
+        sendRepairCodeType: '渠道码',
+        startDate: '2019-03-03',
+        endDate: '2025-03-03',
+      },
+    ];
+    const result = {
+      list: dataSource,
+      pagination: {
+        total: dataSource.length,
+        pageSize: 20,
+        current: 1,
+      },
+    };
+
+    return res.json(result);
+  },
 
   'GET /process/repairCompanyGroup': (req, res)=>{
     const dataSource = [

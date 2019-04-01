@@ -1,4 +1,4 @@
-import { queryReport, queryReprotInit, searchBrand } from '@/services/report';
+import { queryReport, queryReprotInit, searchBrand } from '@/services/demo';
 
 
 export default {
