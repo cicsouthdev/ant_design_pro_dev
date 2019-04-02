@@ -58,4 +58,10 @@ export default {
   'menu.report.sendRepairSuc': '送修成功统计报表',
   'menu.report.monitorRemedy': '监控补救报表',
 
+  'menu.report.clientFeedback': '客户反馈原因分析',
+  'menu.report.sendRepairProcess': '送修流程原因分析',
+  'menu.report.sendRepairStrategy': '送修策略统计',
+  'menu.report.organizationCover': '机构车商/品牌覆盖度分析',
+  'menu.report.companyCover': '综合修理厂合作覆盖度分析',
+
 };

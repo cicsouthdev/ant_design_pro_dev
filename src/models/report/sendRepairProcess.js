@@ -29,6 +29,9 @@ export default {
     monitorRemedyList: [],
     monitorRemedyInitData: {
       belongCompanyList: [],
+      authorizeCompanyList: [],
+      repairCompanyList: [],
+      repairCompanyGroupList: [],
     },
   },
   effects: {

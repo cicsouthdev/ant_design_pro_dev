@@ -124,7 +124,27 @@ export default [
             path: '/report/monitor',
             name: 'monitorRemedy',
             component: './Report/SendRepairProcess/MonitorRemedy',
-          }
+          },
+          {
+            path: '/report/clientFb',
+            name: 'clientFeedback',
+            component: './Report/SendRepairAnalysis/SendRepairStrategy',
+          },
+          {
+            path: '/report/process',
+            name: 'sendRepairProcess',
+            component: './Report/SendRepairAnalysis/OrganizationCover',
+          },
+          {
+            path: '/report/strategy',
+            name: 'sendRepairStrategy',
+            component: './Report/SendRepairAnalysis/SendRepairStrategy',
+          },
+          {
+            path: '/report/companyCover',
+            name: 'companyCover',
+            component: './Report/SendRepairAnalysis/repairCompanyCover',
+          },
         ],
       },
       // forms
