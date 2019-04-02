@@ -16,3 +16,11 @@ export async function initSendRepairNum() {
 export async function initSendRepairSuc(){
   return request('/report/sendRepairSuccessInit');
 }
+
+export async function searchMonitorRemedy(){
+  return request('/report/monitorRemedy');
+}
+
+export async function initMonitorRemedy(){
+  return request('/report/monitorRemedyInit');
+}

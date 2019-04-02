@@ -56,5 +56,6 @@ export default {
   'menu.report': '报表',
   'menu.report.sendRepair': '送修量统计报表',
   'menu.report.sendRepairSuc': '送修成功统计报表',
+  'menu.report.monitorRemedy': '监控补救报表',
 
 };

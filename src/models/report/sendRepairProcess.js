@@ -3,6 +3,8 @@ import {
   initSendRepairNum,
   searchSendRepairSuccess,
   initSendRepairSuc,
+  searchMonitorRemedy,
+  initMonitorRemedy,
 } from '@/services/report'
 
 export default {
@@ -23,7 +25,11 @@ export default {
       repairCompanyList: [],
       policyBelongList: [],
       sendRepairBrand: [],
-    }
+    },
+    monitorRemedyList: [],
+    monitorRemedyInitData: {
+      belongCompanyList: [],
+    },
   },
   effects: {
     *fetchSendRepairNum({ payload }, { call, put }) {
@@ -54,6 +60,20 @@ export default {
         payload: response,
       });
     },
+    *fetchMonitorRemedy({ payload }, { call, put }){
+      const response = yield call(searchMonitorRemedy);
+      yield put({
+        type: 'saveMonitorRemedy',
+        payload: response,
+      });
+    },
+    *initMonitorRemedy({}, {call, put}){
+      const response = yield call(initMonitorRemedy);
+      yield put({
+        type: 'saveMonitorRemedyInitData',
+        payload: response,
+      });
+    },
   },
   reducers: {
     saveSendRepairNum(state, action){
@@ -79,6 +99,18 @@ export default {
         ...state,
         sendRepairSuccessInitData: action.payload || {},
       }
-    }
+    },
+    saveMonitorRemedy(state, action){
+      return {
+        ...state,
+        monitorRemedyList: action.payload,
+      }
+    },
+    saveMonitorRemedyInitData(state, action){
+      return {
+        ...state,
+        monitorRemedyInitData: action.payload || {},
+      }
+    },
   },
 }

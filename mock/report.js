@@ -72,6 +72,13 @@ function getReportSuccessInitData(req, res){
   return res.json(result);
 }
 
+function getMonitorRemedyInitData(req, res){
+  const result = {
+    belongCompanyList: getBelongCompany(),
+  };
+  return res.json(result);
+}
+
 export default {
 
   'GET /report/sendRepairNum': (req, res)=>{
@@ -96,6 +103,7 @@ export default {
     ];
     return res.json(result);
   },
+  'GET /report/sendRepairNumInit': getRepairNumInitData,
 
   'GET /report/sendRepairSuccess': (req, res)=>{
     // const {} = req.body;
@@ -118,7 +126,19 @@ export default {
 
     return res.json(result);
   },
-
-  'GET /report/sendRepairNumInit': getRepairNumInitData,
   'GET /report/sendRepairSuccessInit': getReportSuccessInitData,
+
+  'GET /report/monitorRemedy': (req, res)=>{
+    const result = [
+      {
+        id: '000001',
+        sender: '王五',
+        sendRepairNum: '183',
+        replyNum: '123',
+      },
+    ];
+
+    return res.json(result);
+  },
+  'GET /report/monitorRemedyInit': getMonitorRemedyInitData,
 }

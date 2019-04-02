@@ -120,6 +120,11 @@ export default [
             name: 'sendRepairSuc',
             component: './Report/SendRepairProcess/SendRepairSuccess',
           },
+          {
+            path: '/report/monitor',
+            name: 'monitorRemedy',
+            component: './Report/SendRepairProcess/MonitorRemedy',
+          }
         ],
       },
       // forms
