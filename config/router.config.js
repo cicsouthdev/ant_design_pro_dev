@@ -113,8 +113,13 @@ export default [
           {
             path: '/report/sendRepair',
             name: 'sendRepair',
-            component: './Report/SendRepairProcess/SendRepairNum',
-          }
+            component: './Report/SendRepairProcess/SendRepairSuccess',
+          },
+          {
+            path: '/report/sendRepairSuc',
+            name: 'sendRepairSuc',
+            component: './Report/SendRepairProcess/SendRepairSuccess',
+          },
         ],
       },
       // forms

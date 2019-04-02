@@ -1,4 +1,9 @@
-import { searchSendRepairNum, initSendRepairNum, searchSendRepairSuccess } from '@/services/report'
+import {
+  searchSendRepairNum,
+  initSendRepairNum,
+  searchSendRepairSuccess,
+  initSendRepairSuc,
+} from '@/services/report'
 
 export default {
   namespace: 'sendRepairProcess',
@@ -12,6 +17,13 @@ export default {
       sendRepairBrand: [],
     },
     sendRepairSuccessList: [],
+    sendRepairSuccessInitData: {
+      belongCompanyList: [],
+      surveyPossessionList: [],
+      repairCompanyList: [],
+      policyBelongList: [],
+      sendRepairBrand: [],
+    }
   },
   effects: {
     *fetchSendRepairNum({ payload }, { call, put }) {
@@ -35,6 +47,13 @@ export default {
         payload: response,
       });
     },
+    *initSendRepairSuccess({}, {call, put}){
+      const response = yield call(initSendRepairSuc);
+      yield put({
+        type: 'saveSendRepairSuccessInitData',
+        payload: response,
+      });
+    },
   },
   reducers: {
     saveSendRepairNum(state, action){
@@ -55,5 +74,11 @@ export default {
         sendRepairSuccessList: action.payload,
       }
     },
+    saveSendRepairSuccessInitData(state, action){
+      return {
+        ...state,
+        sendRepairSuccessInitData: action.payload || {},
+      }
+    }
   },
 }

@@ -1,13 +1,18 @@
-import {queryRepairCompany, querySendRepairCode, searchRepairCompany} from '@/services/process'
+import {
+  queryRepairCompany,
+  queryBelongCompany,
+  querySendRepairCode,
+  searchRepairCompany,
+} from '@/services/process';
 
 export default {
   namespace: 'repairCompany',
   state: {
-    repairCompanyList:{
-      list:[],
-      pagination: {
-      },
+    repairCompanyList: {
+      list: [],
+      pagination: {},
     },
+    belongCompanyList: [],
     sendRepairCodeList: {
       list: [],
       pagination: [],
@@ -22,14 +27,15 @@ export default {
         payload: response,
       });
     },
-    *add(){
-
-    },
-    *update(){
-
-    },
-    *delete(){
-
+    *add() {},
+    *update() {},
+    *delete() {},
+    *getBelongCompanyList({ payload }, { call, put }) {
+      const response = yield call(queryBelongCompany, payload);
+      yield put({
+        type: 'saveBelongCompanyList',
+        payload: response,
+      });
     },
     *fetchSendRepairCode({ payload }, { call, put }) {
       const response = yield call(querySendRepairCode, payload);
@@ -53,18 +59,23 @@ export default {
         repairCompanyList: action.payload,
       };
     },
-    saveSendRepairCode(state, action){
+    saveBelongCompanyList(state, action) {
+      return {
+        ...state,
+        belongCompanyList: action.payload,
+      };
+    },
+    saveSendRepairCode(state, action) {
       return {
         ...state,
         sendRepairCodeList: action.payload,
-      }
+      };
     },
-    saveAutoSearch(state, action){
+    saveAutoSearch(state, action) {
       return {
         ...state,
-        autoSearchCompanyList: action.payload
-      }
-    }
+        autoSearchCompanyList: action.payload,
+      };
+    },
   },
-
-}
+};

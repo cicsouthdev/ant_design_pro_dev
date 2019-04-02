@@ -61,6 +61,17 @@ function getRepairNumInitData(req, res){
   return res.json(result);
 }
 
+function getReportSuccessInitData(req, res){
+  const result = {
+    belongCompanyList: getBelongCompany(),
+    surveyPossessionList: getBelongCompany(),
+    repairCompanyList: getRepairCompany(),
+    policyBelongList: getBelongCompany(),
+    sendRepairBrand: getRepairBrand(),
+  };
+  return res.json(result);
+}
+
 export default {
 
   'GET /report/sendRepairNum': (req, res)=>{
@@ -94,16 +105,14 @@ export default {
         id: '000001',
         repairCompany: '杭州德奥',
         sendRepairNum: '183',
-        contactNum: '142',
-        processRate: '77.6%',
-        tenMinsProcessRate: '66.6%',
-        repairAcceptNum: '100',
-        repairRefuseNum: '42',
-        repairAcceptRate: '70.4%',
-        guideNum: '120',
-        guideDealRate: '65.6%',
-        guideAcceptNum: '110',
-        guideAcceptRate: '91.7%',
+        arriveNum: '100',
+        arriveRate: '54.6%',
+        determineLossNum: '99',
+        arriveDetermineLossNum: '75',
+        arriveDetermineLossRate: '75.7%',
+        determineLossAmount: '453218',
+        arriveAmountDetermineLossRate: '40%',
+
       },
     ];
 
@@ -111,5 +120,5 @@ export default {
   },
 
   'GET /report/sendRepairNumInit': getRepairNumInitData,
-
+  'GET /report/sendRepairSuccessInit': getReportSuccessInitData,
 }
