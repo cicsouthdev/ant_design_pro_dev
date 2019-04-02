@@ -65,3 +65,11 @@ export async function initRepairCompanyCover(){
   return request('/report/repairCompanyCoverInit');
 }
 
+export async function searchResourceUtilizationRate(params){
+  return request(`/report/resourceUtilizationRate?${stringify(params)}`);
+}
+
+export async function initResourceUtilizationRate(){
+  return request('/report/resourceUtilizationRateInit');
+}
+

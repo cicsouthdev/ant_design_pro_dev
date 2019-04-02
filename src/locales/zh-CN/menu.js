@@ -63,5 +63,6 @@ export default {
   'menu.report.sendRepairStrategy': '送修策略统计',
   'menu.report.organizationCover': '机构车商/品牌覆盖度分析',
   'menu.report.companyCover': '综合修理厂合作覆盖度分析',
+  'menu.report.resourceUtilization': '维修资源利用率分析',
 
 };

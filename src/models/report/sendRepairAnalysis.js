@@ -4,6 +4,7 @@ import {
   searchSendRepairStrategy, initSendRepairStrategy,
   searchOrganizationCover, initOrganizationCover,
   searchRepairCompanyCover, initRepairCompanyCover,
+  searchResourceUtilizationRate, initResourceUtilizationRate,
 } from '@/services/report'
 
 export default {
@@ -50,6 +51,14 @@ export default {
       repairBrandList: [],
     },
 
+    resourceUtilizationRateList: [],
+    resourceUtilizationRateInitData: {
+      belongCompanyList: [],
+      authorizeCompanyList: [],
+      repairCompanyList: [],
+      repairCompanyGroupList: [],
+      repairBrandList: [],
+    },
 
   },
   effects: {
@@ -128,6 +137,21 @@ export default {
       });
     },
 
+    *fetchResourceUtilizationRate({ payload }, { call, put }) {
+      const response = yield call(searchResourceUtilizationRate, payload);
+      yield put({
+        type: 'saveResourceUtilizationRate',
+        payload: response,
+      });
+    },
+    *initResourceUtilizationRate({},{call, put}){
+      const response = yield call(initResourceUtilizationRate);
+      yield put({
+        type: 'saveResourceUtilizationRateInitData',
+        payload: response,
+      });
+    },
+
   },
   reducers: {
     saveClientFeedback(state, action){
@@ -192,6 +216,19 @@ export default {
       return {
         ...state,
         repairCompanyCoverInitData: action.payload || {},
+      }
+    },
+
+    saveResourceUtilizationRate(state, action){
+      return {
+        ...state,
+        resourceUtilizationRateList: action.payload,
+      }
+    },
+    saveResourceUtilizationRateInitData(state, action){
+      return {
+        ...state,
+        resourceUtilizationRateInitData: action.payload || {},
       }
     },
 

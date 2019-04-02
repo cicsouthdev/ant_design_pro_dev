@@ -145,6 +145,11 @@ export default [
             name: 'companyCover',
             component: './Report/SendRepairAnalysis/repairCompanyCover',
           },
+          {
+            path: '/report/resourceUtilization',
+            name: 'resourceUtilization',
+            component: './Report/SendRepairAnalysis/ResourceUtilizationRate',
+          },
         ],
       },
       // forms

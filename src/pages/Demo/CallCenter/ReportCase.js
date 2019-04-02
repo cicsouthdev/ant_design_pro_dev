@@ -1380,7 +1380,7 @@ class ReportCase extends PureComponent {
         <Row gutter={{ md: 2, lg: 6, xl: 12 }} style={{ marginTop: 10 }}>
           <Col md={24} sm={24}>
             <FormItem label="出险经过汇总">
-              {getFieldDecorator('total', {
+              {getFieldDecorator('riskTotal', {
                 initialValue: '现场案件，，导致无车损，无物损，无人伤，提醒及时报警处理。',
               })(<Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} disabled />)}
             </FormItem>
@@ -1438,7 +1438,7 @@ class ReportCase extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="来电号码">
-              {getFieldDecorator('insuredPhone')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('reporterPhone')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
         </Row>
@@ -1531,7 +1531,7 @@ class ReportCase extends PureComponent {
                 </span>
               }
             >
-              {getFieldDecorator('isScene', {
+              {getFieldDecorator('isCargo', {
                 initialValue: '3',
               })(
                 <Radio.Group>

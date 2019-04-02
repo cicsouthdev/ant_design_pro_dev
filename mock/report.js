@@ -310,4 +310,24 @@ export default {
     return res.json(result);
   },
   'GET /report/repairCompanyCoverInit': getRepairCompanyCoverInit,
+
+  'GET /report/resourceUtilizationRate': (req, res)=>{
+    const result = [
+      {
+        id: '000001',
+        acceptInsuranceCompany: '杭州市支公司',
+        repairCompanyNum: '325',
+        cooperationNum: '116',
+        brandCoverNum: '35',
+        areaCooperationNum: '20',
+        productionCapacityNum: '95',
+        premiumCount: '135465435',
+        setSendRepair: '116',
+        sendRepairNum: '95',
+      },
+    ];
+
+    return res.json(result);
+  },
+  'GET /report/resourceUtilizationRateInit': getRepairCompanyCoverInit,
 }

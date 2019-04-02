@@ -89,7 +89,7 @@ class RepairCompanyCover extends PureComponent {
   componentDidMount(){
     const { dispatch } = this.props;
     dispatch({
-      type: 'sendRepairAnalysis/initRepairCompanyCover',
+      type: 'sendRepairAnalysis/initResourceUtilizationRate',
       payload: {},
     });
   }
@@ -107,15 +107,15 @@ class RepairCompanyCover extends PureComponent {
       if (err) return;
 
       dispatch({
-        type: 'sendRepairAnalysis/fetchRepairCompanyCover',
+        type: 'sendRepairAnalysis/fetchResourceUtilizationRate',
         payload: {...fieldsValue},
       });
     });
   };
 
   renderForm = ()=>{
-    const { form:{ getFieldDecorator}, sendRepairAnalysis:{repairCompanyCoverInitData} } = this.props;
-    const { belongCompanyList, authorizeCompanyList, repairCompanyList, repairCompanyGroupList, repairBrandList } = repairCompanyCoverInitData;
+    const { form:{ getFieldDecorator}, sendRepairAnalysis:{resourceUtilizationRateInitData} } = this.props;
+    const { belongCompanyList, authorizeCompanyList, repairCompanyList, repairCompanyGroupList, repairBrandList } = resourceUtilizationRateInitData;
 
     return <Form onSubmit={this.handleSearch} layout="inline">
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -158,7 +158,7 @@ class RepairCompanyCover extends PureComponent {
           </FormItem>
         </Col>
         <Col md={8} sm={24}>
-          <FormItem label="送修日期">
+          <FormItem label="查询日期">
             {getFieldDecorator('sendRepairDate')(
               <RangePicker />
             )}
@@ -190,9 +190,9 @@ class RepairCompanyCover extends PureComponent {
 
   render(){
 
-    const { sendRepairAnalysis:{ repairCompanyCoverList } } = this.props;
+    const { sendRepairAnalysis:{ resourceUtilizationRateList } } = this.props;
 
-    return <PageHeaderWrapper title="综合修理厂覆盖度分析">
+    return <PageHeaderWrapper title="维修资源利用率分析">
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
@@ -207,7 +207,7 @@ class RepairCompanyCover extends PureComponent {
             size="middle"
             columns={this.columns}
             pagination={false}
-            dataSource={repairCompanyCoverList}
+            dataSource={resourceUtilizationRateList}
           />
 
         </div>
