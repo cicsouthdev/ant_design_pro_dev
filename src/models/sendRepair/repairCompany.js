@@ -3,6 +3,7 @@ import {
   queryBelongCompany,
   querySendRepairCode,
   searchRepairCompany,
+  searchBrand,
 } from '@/services/process';
 
 export default {
@@ -18,6 +19,7 @@ export default {
       pagination: [],
     },
     autoSearchCompanyList: [],
+    autoBrandList: [],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -51,6 +53,13 @@ export default {
         payload: response,
       });
     },
+    *searchAutoBrand({ payload }, { call, put }){
+      const response = yield call(searchBrand, payload);
+      yield put({
+        type: 'saveAutoBrand',
+        payload: response,
+      });
+    }
   },
   reducers: {
     saveRepairCompany(state, action) {
@@ -77,5 +86,11 @@ export default {
         autoSearchCompanyList: action.payload,
       };
     },
+    saveAutoBrand(state, action) {
+      return {
+        ...state,
+        autoBrandList: action.payload,
+      }
+    }
   },
 };

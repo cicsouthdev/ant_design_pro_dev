@@ -2,6 +2,33 @@ import { parse } from "url";
 
 
 export default {
+  'GET /process/carBrand': (req, res)=>{
+    const dataSource = [
+      {
+        id: '111',
+        name: '广州丰田',
+        code: 'gft',
+      },{
+        id: '222',
+        name: '四川丰田',
+        code: 'sft',
+      },{
+        id: '333',
+        name: '一汽丰田',
+        code: 'yft',
+      },
+    ];
+    const result = {
+      list: dataSource,
+      pagination: {
+        total: dataSource.length,
+        pageSize: 20,
+        current: 1,
+      },
+    };
+    return res.json(result);
+  },
+
   'GET /process/carBrandRel': (req, res)=>{
     const dataSource = [
       {
@@ -65,9 +92,9 @@ export default {
     {code: '33010500', name: '嘉兴市支公司'},
     {code: '33010600', name: '衢州市支公司'},
     {code: '33010700', name: '金华市支公司'},
-    {code: '33010700', name: '台州市支公司'},
-    {code: '33010800', name: '丽水市支公司'},
-    {code: '33010900', name: '舟山市支公司'},
+    {code: '33010800', name: '台州市支公司'},
+    {code: '33010900', name: '丽水市支公司'},
+    {code: '33011000', name: '舟山市支公司'},
   ],
 
   'GET /process/brandSSSSRel': (req, res)=>{
@@ -159,7 +186,7 @@ export default {
         giveUp: '0',
         valid: '1',
       },{
-        id: '123413234',
+        id: '123412223234',
         companyCode: '33003H100054',
         companyName: '杭州汇迪',
         repairCompanyCode: '3301031000005',
@@ -170,7 +197,7 @@ export default {
         giveUp: '0',
         valid: '1',
       },{
-        id: '125341234',
+        id: '125311141234',
         companyCode: '3301001000016',
         companyName: '建德元麦',
         repairCompanyCode: '3301001000016',
@@ -181,7 +208,7 @@ export default {
         giveUp: '1',
         valid: '1',
       },{
-        id: '123432134',
+        id: '12333432134',
         companyCode: '33003H100240',
         companyName: '杭州九和',
         repairCompanyCode: '3301533000001',
@@ -590,4 +617,11 @@ export default {
 
     return res.json(result);
   },
+
+  'GET /process/autoBrand': (req, res)=>{
+    const result = [
+
+    ];
+    return res.json(result);
+  }
 }

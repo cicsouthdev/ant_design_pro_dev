@@ -1,6 +1,10 @@
 import request from '@/utils/request';
 import { stringify } from 'qs';
 
+export async function searchCarBrand(params) {
+  return request(`/process/carBrand?${stringify(params)}`);
+}
+
 export async function queryCarBrandRel(params) {
   return request(`/process/carBrandRel?${stringify(params)}`);
 }
@@ -85,3 +89,4 @@ export async function querySendRepairCode(params) {
 export async function searchRepairCompany(params) {
   return request(`/process/repairCompany?${stringify(params)}`);
 }
+

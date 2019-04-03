@@ -73,3 +73,43 @@ export async function initResourceUtilizationRate(){
   return request('/report/resourceUtilizationRateInit');
 }
 
+
+export async function searchPremium(params){
+  return request(`/report/resourceUtilizationRate?${stringify(params)}`);
+}
+
+export async function initPremium(){
+  return request('/report/resourceUtilizationRateInit');
+}
+
+export async function searchPayoutRate(params){
+  return request(`/report/resourceUtilizationRate?${stringify(params)}`);
+}
+
+export async function initPayoutRate(){
+  return request('/report/resourceUtilizationRateInit');
+}
+
+export async function searchRepairAmount(params){
+  return request(`/report/resourceUtilizationRate?${stringify(params)}`);
+}
+
+export async function initRepairAmount(){
+  return request('/report/resourceUtilizationRateInit');
+}
+
+export async function searchProfit(params){
+  return request(`/report/resourceUtilizationRate?${stringify(params)}`);
+}
+
+export async function initProfit(){
+  return request('/report/resourceUtilizationRateInit');
+}
+
+export async function searchResourceScore(params){
+  return request(`/report/resourceUtilizationRate?${stringify(params)}`);
+}
+
+export async function initResourceScore(){
+  return request('/report/resourceUtilizationRateInit');
+}

@@ -74,6 +74,11 @@ export default [
         path: '/sendRepair',
         routes: [
           {
+            path: '/sendRepair/carBrand',
+            name: 'brand',
+            component: './SendRepair/CarBrand/CarBrand',
+          },
+          {
             path: '/sendRepair/carBrandRel',
             name: 'carBrandRel',
             component: './SendRepair/CarBrandRel/CarBrandRel'
@@ -133,12 +138,17 @@ export default [
           {
             path: '/report/process',
             name: 'sendRepairProcess',
-            component: './Report/SendRepairAnalysis/OrganizationCover',
+            component: './Report/SendRepairAnalysis/SendRepairProcess',
           },
           {
             path: '/report/strategy',
             name: 'sendRepairStrategy',
             component: './Report/SendRepairAnalysis/SendRepairStrategy',
+          },
+          {
+            path: '/report/cover',
+            name: 'organizationCover',
+            component: './Report/SendRepairAnalysis/OrganizationCover',
           },
           {
             path: '/report/companyCover',

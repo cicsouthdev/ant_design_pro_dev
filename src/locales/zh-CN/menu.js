@@ -45,6 +45,7 @@ export default {
   'menu.demo': 'DEMO',
   'menu.demo.reportCase': '呼叫中心-报案',
   'menu.process': '流程控制',
+  'menu.process.brand': '品牌维护',
   'menu.process.carBrandRel': '车型与品牌关系',
   'menu.process.brandSSSSRel': '品牌与修理厂关系',
   'menu.process.repairCompany': '维修单位设置',
