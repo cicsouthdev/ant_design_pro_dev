@@ -77,13 +77,13 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="起保日期开始">
         {form.getFieldDecorator('startDate', {
           rules: [{ required: true }],
-          initialValue: moment(startDate, 'YYYY-MM-DD'),
+          initialValue: startDate?moment(startDate, 'YYYY-MM-DD'):'',
         })(<DatePicker style={{width: '100%'}} />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="起保日期结束">
         {form.getFieldDecorator('endDate', {
           rules: [{ required: true }],
-          initialValue: moment(endDate, 'YYYY-MM-DD'),
+          initialValue: endDate?moment(endDate, 'YYYY-MM-DD'):'',
         })(<DatePicker style={{width: '100%'}} />)}
       </FormItem>
     </Modal>
@@ -259,11 +259,14 @@ class SendRepairCode extends PureComponent {
   renderForm() {
     const {
       form: { getFieldDecorator },
-      repairCompany: { autoSearchCompanyList=[] },
+      repairCompany: { autoSearchCompanyList=[], belongCompanyList=[] },
     } = this.props;
 
     const Option = AutoComplete.Option;
     const children = autoSearchCompanyList.map(d=><Option key={d.code}>{d.name}</Option>);
+    const belongCompanyChildren = belongCompanyList.map(d => (
+      <Select.Option key={d.code}>{d.name}</Select.Option>
+    ));
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -271,15 +274,14 @@ class SendRepairCode extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="归属公司">
               {getFieldDecorator('belongCompany')(
-                <Input />
+                <Select >{belongCompanyChildren}</Select>
               )}
-                {/*<Select ></Select>*/}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="维修单位">
               {getFieldDecorator('repairCompany')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
+                <AutoComplete placeholder='输入搜索' onSearch={this.handleAutoSearch} dataSource={children}>
                 </AutoComplete>
               )}
             </FormItem>

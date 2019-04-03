@@ -33,53 +33,64 @@ class RepairCompanyCover extends PureComponent {
     {
       title: '承保机构',
       dataIndex: 'acceptInsuranceCompany',
-    },
-    {
-      title: '综合修理厂数量',
-      dataIndex: 'repairCompanyNum',
-    },
-    {
-      title: '合作综修厂数',
-      dataIndex: 'cooperationNum',
       render: (d, data)=> <Fragment>
         <a onClick={()=>this.handleExport(data.id)}>{d}</a>
       </Fragment>,
     },
     {
-      title: '其中专修厂覆盖品牌',
-      dataIndex: 'brandCoverNum',
+      title: '机构出险率',
+      dataIndex: 'riskRate',
+    },
+    {
+      title: '有车损报案件数',
+      dataIndex: 'carLossReportNum',
       render: (d, data)=> <Fragment>
         <a onClick={()=>this.handleExport(data.id)}>{d}</a>
       </Fragment>,
     },
     {
-      title: '区域内合作专修厂',
-      dataIndex: 'areaCooperationNum',
+      title: '车损定损金额',
+      dataIndex: 'carLossNum',
       render: (d, data)=> <Fragment>
         <a onClick={()=>this.handleExport(data.id)}>{d}</a>
       </Fragment>,
     },
     {
-      title: '合作综修厂有产能数',
-      dataIndex: 'productionCapacityNum',
-      render: (d, data)=> <Fragment>
-        <a onClick={()=>this.handleExport(data.id)}>{d}</a>
-      </Fragment>,
+      title: '车损定损金额',
+      dataIndex: 'carLossAmount',
     },
     {
-      title: '综修厂保费累计',
-      dataIndex: 'premiumCount',
+      title: '规则理论产生送修数量',
+      dataIndex: 'theoreticalSendRepairNum',
     },
     {
-      title: '综修厂设置送修家数',
-      dataIndex: 'setSendRepair',
-      render: (d, data)=> <Fragment>
-        <a onClick={()=>this.handleExport(data.id)}>{d}</a>
-      </Fragment>,
-    },
-    {
-      title: '综修厂实际送修家数',
+      title: '实际送修件数',
       dataIndex: 'sendRepairNum',
+      render: (d, data)=> <Fragment>
+        <a onClick={()=>this.handleExport(data.id)}>{d}</a>
+      </Fragment>,
+    },
+    {
+      title: '送修回复成功件数',
+      dataIndex: 'successReplyNum',
+      render: (d, data)=> <Fragment>
+        <a onClick={()=>this.handleExport(data.id)}>{d}</a>
+      </Fragment>,
+    },
+    {
+      title: '送修成功匹配件数',
+      dataIndex: 'successMatchNum',
+      render: (d, data)=> <Fragment>
+        <a onClick={()=>this.handleExport(data.id)}>{d}</a>
+      </Fragment>,
+    },
+    {
+      title: '送修成功匹配金额',
+      dataIndex: 'successMatchAmount',
+    },
+    {
+      title: '非送修厂定损',
+      dataIndex: 'notRepairCompanyAmount',
       render: (d, data)=> <Fragment>
         <a onClick={()=>this.handleExport(data.id)}>{d}</a>
       </Fragment>,

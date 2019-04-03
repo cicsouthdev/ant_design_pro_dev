@@ -145,7 +145,7 @@ export default {
   'PUT /process/brandSSSSRel': {msg:'success'},
   'DELETE /process/brandSSSSRel': {msg:'success'},
 
-  'GET /process/repairCompany': (req, res)=>{
+  'GET /process/repairCompanies': (req, res)=>{
     const dataSource = [
       {
         id: '14321234',

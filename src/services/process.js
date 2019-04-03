@@ -59,7 +59,7 @@ export async function updateBrandSSSSRel(params) {
 }
 
 export async function queryRepairCompany(params) {
-  return request(`/process/repairCompany?${stringify(params)}`);
+  return request(`/process/repairCompanies?${stringify(params)}`);
 }
 
 export async function queryRepairCompanyGroup(params) {

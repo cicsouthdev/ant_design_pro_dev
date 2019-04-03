@@ -1,9 +1,15 @@
-import {queryBrandSSSSRel, saveBrandSSSSRel, updateBrandSSSSRel} from '@/services/process'
+import {
+  queryBrandSSSSRel,
+  saveBrandSSSSRel,
+  updateBrandSSSSRel,
+  queryBelongCompany,
+} from '@/services/process';
 
 export default {
   namespace: 'brandSSSSRel',
   state: {
     brandSSSSRelList: [],
+    belongCompanyList: [],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -13,11 +19,18 @@ export default {
         payload: response,
       });
     },
-    *add({ payload }, {call}){
+    *add({ payload }, { call }) {
       yield call(saveBrandSSSSRel, payload);
     },
-    *update({ payload }, {call}){
+    *update({ payload }, { call }) {
       yield call(updateBrandSSSSRel, payload);
+    },
+    *getBelongCompanyList({ payload }, { call, put }) {
+      const response = yield call(queryBelongCompany, payload);
+      yield put({
+        type: 'saveBelongCompanyList',
+        payload: response,
+      });
     },
   },
   reducers: {
@@ -27,5 +40,11 @@ export default {
         brandSSSSRelList: action.payload,
       };
     },
-  }
-}
+    saveBelongCompanyList(state, action) {
+      return {
+        ...state,
+        belongCompanyList: action.payload,
+      };
+    },
+  },
+};

@@ -10,7 +10,10 @@ import {
   Modal,
   message,
   Divider,
-  AutoComplete, Switch,
+  AutoComplete,
+  Switch,
+  Select,
+  Icon,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -25,9 +28,28 @@ const getValue = obj =>
 
 const CreateForm = Form.create()(props => {
   const {
-    modalVisible, form, handleAdd, handleModalVisible,
-    defaultValue: {id, companyCode, companyName, repairCompanyCode, companyAddress, longitude, latitude, belongCompany, giveUo, valid,  }
+    modalVisible,
+    form,
+    handleAdd,
+    handleModalVisible,
+    belongCompanyList,
+    defaultValue: {
+      id,
+      companyCode,
+      companyName,
+      repairCompanyCode,
+      companyAddress,
+      longitude,
+      latitude,
+      belongCompany,
+      giveUp,
+      valid,
+    },
   } = props;
+
+  const Option = Select.Option;
+
+  const belongCompanyChildren = belongCompanyList.map(d => <Option key={d.code}>{d.name}</Option>);
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -36,27 +58,26 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-  const cancelHandle = () =>{
+  const cancelHandle = () => {
     form.resetFields();
-    handleModalVisible()
+    handleModalVisible();
   };
 
   return (
-
     <Modal
       destroyOnClose
       title="新增维修单位"
       visible={modalVisible}
       onOk={okHandle}
-      onCancel={cancelHandle }
+      onCancel={cancelHandle}
     >
-      <FormItem style={{display: 'none'}} label="id">
-        {form.getFieldDecorator('id', {initialValue: id})(<Input />)}
+      <FormItem style={{ display: 'none' }} label="id">
+        {form.getFieldDecorator('id', { initialValue: id })(<Input />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="单位代码">
         {form.getFieldDecorator('companyCode', {
           rules: [{ required: true }],
-          initialValue: companyCode
+          initialValue: companyCode,
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="单位名称">
@@ -68,20 +89,20 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="修理厂代码">
         {form.getFieldDecorator('repairCompanyCode', {
           rules: [{ required: true }],
-          initialValue: repairCompanyCode
+          initialValue: repairCompanyCode,
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="归属公司">
         {form.getFieldDecorator('belongCompany', {
           rules: [{ required: true }],
           initialValue: belongCompany,
-        })(<Input placeholder="请输入" />)}
+        })(<Select style={{ width: '100%' }}>{belongCompanyChildren}</Select>)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="地址">
         {form.getFieldDecorator('companyAddress', {
           rules: [{ required: true }],
           initialValue: companyAddress,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" addonAfter={<Icon type="pushpin" />} />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="经度">
         {form.getFieldDecorator('longitude', {
@@ -147,16 +168,16 @@ class TableList extends PureComponent {
     {
       title: '可放弃',
       dataIndex: 'giveUp',
-      render: (d)=><Switch defaultChecked={d==="1"} />
+      render: d => <Switch defaultChecked={d === '1'} />,
     },
     {
       title: '有效',
       dataIndex: 'valid',
-      render: (d)=><Switch defaultChecked={d==="1"} />
+      render: d => <Switch defaultChecked={d === '1'} />,
     },
     {
       title: '操作',
-      render: (data) => (
+      render: data => (
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, data)}>修改</a>
           <Divider type="vertical" />
@@ -170,6 +191,9 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'repairCompany/fetch',
+    });
+    dispatch({
+      type: 'repairCompany/getBelongCompanyList',
     });
   }
 
@@ -238,20 +262,20 @@ class TableList extends PureComponent {
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
-      updateValue: {}
+      updateValue: {},
     });
   };
 
   handleUpdateModalVisible = (flag, record) => {
     this.handleModalVisible(flag);
-    this.setState({updateValue: {...record}})
+    this.setState({ updateValue: { ...record } });
   };
 
   handleAdd = fields => {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'repairCompany/'+fields.id?'update':'add',
+      type: 'repairCompany/' + fields.id ? 'update' : 'add',
       payload: {
         ...fields,
       },
@@ -261,38 +285,42 @@ class TableList extends PureComponent {
     this.handleModalVisible();
   };
 
-  handleAutoSearch = (value)=>{
+  handleAutoSearch = value => {
     const { dispatch } = this.props;
     dispatch({
       type: 'repairCompany/searchBrand',
       payload: {
         query: value,
-      }
+      },
     });
   };
 
   renderForm() {
     const {
       form: { getFieldDecorator },
-      repairCompany: { brandAutoCompleteData=[] },
+      repairCompany: { brandAutoCompleteData = [], belongCompanyList = [] },
     } = this.props;
 
     const Option = AutoComplete.Option;
-    const children = brandAutoCompleteData.map(d=><Option key={d.code}>{`${d.name} (${d.number})`}</Option>);
+    const children = brandAutoCompleteData.map(d => (
+      <Option key={d.code}>{`${d.name} (${d.number})`}</Option>
+    ));
+    const belongCompanyChildren = belongCompanyList.map(d => (
+      <Select.Option key={d.code}>{d.name}</Select.Option>
+    ));
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="归属公司">
-              {getFieldDecorator('company')(<Input placeholder="请输入(前N位)" />)}
+              {getFieldDecorator('company')(<Select>{belongCompanyChildren}</Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="维修单位">
               {getFieldDecorator('repairCompany')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
-                </AutoComplete>
+                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children} />
               )}
             </FormItem>
           </Col>
@@ -310,7 +338,7 @@ class TableList extends PureComponent {
 
   render() {
     const {
-      repairCompany: {repairCompanyList},
+      repairCompany: { repairCompanyList, belongCompanyList },
     } = this.props;
     const { selectedRows, modalVisible, updateValue } = this.state;
 
@@ -334,7 +362,7 @@ class TableList extends PureComponent {
               )}
             </div>
             <StandardTable
-              royKey='id'
+              royKey="id"
               size="middle"
               selectedRows={selectedRows}
               data={repairCompanyList}
@@ -344,7 +372,12 @@ class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} defaultValue={updateValue}/>
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          defaultValue={updateValue}
+          belongCompanyList={belongCompanyList}
+        />
       </PageHeaderWrapper>
     );
   }

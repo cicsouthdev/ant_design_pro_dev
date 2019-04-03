@@ -11,6 +11,7 @@ import {
   message,
   Divider,
   AutoComplete,
+  Select,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -25,10 +26,26 @@ const getValue = obj =>
 
 const CreateForm = Form.create()(props => {
   const {
-    modalVisible, form, handleAdd, handleModalVisible,
-    defaultValue: {id, surveyPossession, sendRepairBrand, repairCompany, sendRepairWeight,
-      weightProportion, sendRepairProportion, nearbyCoefficient, farAwayCoefficient, nearbyDistance,
-      farAwayDistance, nearbyKeyWord, farAwayKeyWord, }
+    modalVisible,
+    form,
+    handleAdd,
+    handleModalVisible,
+    belongCompanyList,
+    defaultValue: {
+      id,
+      surveyPossession,
+      sendRepairBrand,
+      repairCompany,
+      sendRepairWeight,
+      weightProportion,
+      sendRepairProportion,
+      nearbyCoefficient,
+      farAwayCoefficient,
+      nearbyDistance,
+      farAwayDistance,
+      nearbyKeyWord,
+      farAwayKeyWord,
+    },
   } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -38,28 +55,31 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-  const cancelHandle = () =>{
+  const cancelHandle = () => {
     form.resetFields();
-    handleModalVisible()
+    handleModalVisible();
   };
 
-  return (
+  const belongCompanyChildren = belongCompanyList.map(d => (
+    <Select.Option key={d.code}>{d.name}</Select.Option>
+  ));
 
+  return (
     <Modal
       destroyOnClose
       title="新增车型与品牌的关系"
       visible={modalVisible}
       onOk={okHandle}
-      onCancel={cancelHandle }
+      onCancel={cancelHandle}
     >
-      <FormItem style={{display: 'none'}} label="id">
-        {form.getFieldDecorator('id', {initialValue: id})(<Input />)}
+      <FormItem style={{ display: 'none' }} label="id">
+        {form.getFieldDecorator('id', { initialValue: id })(<Input />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="查勘属地">
         {form.getFieldDecorator('surveyPossession', {
           rules: [{ required: true }],
-          initialValue: surveyPossession
-        })(<Input placeholder="请输入" />)}
+          initialValue: surveyPossession,
+        })(<Select style={{ width: '100%' }}>{belongCompanyChildren}</Select>)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修品牌">
         {form.getFieldDecorator('sendRepairBrand', {
@@ -70,7 +90,7 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="维修单位">
         {form.getFieldDecorator('repairCompany', {
           rules: [{ required: true }],
-          initialValue: repairCompany
+          initialValue: repairCompany,
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="送修权重">
@@ -119,13 +139,13 @@ const CreateForm = Form.create()(props => {
         {form.getFieldDecorator('nearbyKeyWord', {
           rules: [{ required: true }],
           initialValue: nearbyKeyWord,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="关键字用逗号隔开" />)}
       </FormItem>
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="远离地名关键字">
         {form.getFieldDecorator('farAwayKeyWord', {
           rules: [{ required: true }],
           initialValue: farAwayKeyWord,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="关键字用逗号隔开" />)}
       </FormItem>
     </Modal>
   );
@@ -206,7 +226,7 @@ class TableList extends PureComponent {
       title: '操作',
       fixed: 'right',
       width: 100,
-      render: (data) => (
+      render: data => (
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, data)}>修改</a>
           <Divider type="vertical" />
@@ -220,6 +240,9 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'brandSSSSRel/fetch',
+    });
+    dispatch({
+      type: 'brandSSSSRel/getBelongCompanyList',
     });
   }
 
@@ -300,20 +323,20 @@ class TableList extends PureComponent {
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
-      updateValue: {}
+      updateValue: {},
     });
   };
 
   handleUpdateModalVisible = (flag, record) => {
     this.handleModalVisible(flag);
-    this.setState({updateValue: {...record}})
+    this.setState({ updateValue: { ...record } });
   };
 
   handleAdd = fields => {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'brandSSSSRel/'+fields.id?'update':'add',
+      type: 'brandSSSSRel/' + fields.id ? 'update' : 'add',
       payload: {
         ...fields,
       },
@@ -323,56 +346,56 @@ class TableList extends PureComponent {
     this.handleModalVisible();
   };
 
-  handleAutoSearch = (value)=>{
+  handleAutoSearch = value => {
     const { dispatch } = this.props;
     dispatch({
       type: 'brandSSSSRel/searchBrand',
       payload: {
         query: value,
-      }
+      },
     });
   };
 
   renderForm() {
     const {
       form: { getFieldDecorator },
-      brandSSSSRel: { brandAutoCompleteData=[] },
+      brandSSSSRel: { brandAutoCompleteData = [], belongCompanyList = [] },
     } = this.props;
 
     const Option = AutoComplete.Option;
-    const children = brandAutoCompleteData.map(d=><Option key={d.code}>{`${d.name} (${d.number})`}</Option>);
+    const children = brandAutoCompleteData.map(d => (
+      <Option key={d.code}>{`${d.name} (${d.number})`}</Option>
+    ));
+    const belongCompanyChildren = belongCompanyList.map(d => (
+      <Select.Option key={d.code}>{d.name}</Select.Option>
+    ));
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="归属公司">
-              {getFieldDecorator('company')(<Input placeholder="请输入(前N位)" />)}
+              {getFieldDecorator('belongCompany')(<Select>{belongCompanyChildren}</Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="查勘属地">
-              {getFieldDecorator('brandName')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
-                </AutoComplete>
-              )}
+              {getFieldDecorator('surveyBelong')(<Select>{belongCompanyChildren}</Select>)}
             </FormItem>
           </Col>
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="送修品牌">
-              {getFieldDecorator('brandName')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
-                </AutoComplete>
+              {getFieldDecorator('sendRepairBrand')(
+                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children} />
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="维修单位">
-              {getFieldDecorator('brandName')(
-                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children}>
-                </AutoComplete>
+              {getFieldDecorator('repairCompany')(
+                <AutoComplete onSearch={this.handleAutoSearch} dataSource={children} />
               )}
             </FormItem>
           </Col>
@@ -390,7 +413,7 @@ class TableList extends PureComponent {
 
   render() {
     const {
-      brandSSSSRel: {brandSSSSRelList},
+      brandSSSSRel: { brandSSSSRelList, belongCompanyList },
     } = this.props;
     const { selectedRows, modalVisible, updateValue } = this.state;
 
@@ -424,7 +447,12 @@ class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} defaultValue={updateValue}/>
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          defaultValue={updateValue}
+          belongCompanyList={belongCompanyList}
+        />
       </PageHeaderWrapper>
     );
   }
